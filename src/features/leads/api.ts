@@ -1,4 +1,4 @@
-import { apiClient } from '@/lib/api/client';
+import { apiClient, API_BASE_URL } from '@/lib/api/client';
 import {
   Lead,
   LeadStatus,
@@ -128,8 +128,7 @@ export async function downloadLeadsCsv(params: QueryLeadsParams = {}): Promise<v
   if (params.ownerId) query.set('ownerId', params.ownerId);
 
   const qs = query.toString();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
-  const res = await fetch(`${apiUrl}/leads/export${qs ? `?${qs}` : ''}`, {
+  const res = await fetch(`${API_BASE_URL}/leads/export${qs ? `?${qs}` : ''}`, {
     method: 'GET',
     credentials: 'include',
   });
@@ -146,8 +145,7 @@ export async function downloadLeadsCsv(params: QueryLeadsParams = {}): Promise<v
 }
 
 export async function downloadSelectedLeadsCsv(leadIds: string[]): Promise<void> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
-  const res = await fetch(`${apiUrl}/leads/export`, {
+  const res = await fetch(`${API_BASE_URL}/leads/export`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
