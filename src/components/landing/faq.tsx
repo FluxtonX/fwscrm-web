@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import * as React from 'react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
 
 interface FAQItem {
   question: string;
@@ -9,43 +9,33 @@ interface FAQItem {
 }
 
 export function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = React.useState<number | null>(0);
 
   const faqs: FAQItem[] = [
     {
-      question: 'What is FWS CRM?',
+      question: 'What makes FWS CRM different from conventional CRMs?',
       answer:
-        'FWS CRM is a modern, production-grade Customer Relationship Management platform designed to streamline lead acquisition, tracking, pipeline progression, and bulk CSV data ingestion within a secure multi-tenant architecture.',
+        'FWS CRM combines high-speed streaming CSV & XLSX data ingestion, interactive column mapping with strict unmapped data filtering, and real-time pipeline telemetry into a unified workspace with strict tenant security.',
     },
     {
-      question: 'Who is this CRM for?',
+      question: 'How does the spreadsheet import handle large volumes without crashing?',
       answer:
-        'It is built for scaling sales organizations, lead generation agencies, and enterprise sales teams who require reliable duplicate detection, strict team role permissions, and high-performance ingestion of bulk prospect records.',
+        'The ingestion engine processes files asynchronously in transactional batches of 100 records. Duplicates are filtered in real-time, unmapped columns are completely discarded from memory, and validation results are logged with drill-down audit logs.',
     },
     {
-      question: 'Can I manage leads and customers with custom fields?',
+      question: 'Can I manage sales teams with granular role permissions?',
       answer:
-        'Yes. You can manage complete lead profiles including First Name, Last Name, Email, Phone, Country, Lead Source, Referrer, and custom tags, with full search, sorting, and multi-column filtering.',
-    },
-    {
-      question: 'How does the CSV import handle large files and duplicates?',
-      answer:
-        'The backend utilizes a streaming CSV ingestion worker that processes files in transactional batches of 500 rows. Duplicate emails within your organization are detected and filtered, and any validation errors are logged row-by-row with drill-down audit capabilities.',
-    },
-    {
-      question: 'Can I manage team members and control access permissions?',
-      answer:
-        'Yes. FWS CRM implements comprehensive Role-Based Access Control (RBAC) supporting Super Admin, Admin, Manager, Agent, and Viewer roles. Every query enforces strict organization tenant boundaries.',
+        'Yes. FWS CRM implements a 5-tier Role-Based Access Control (RBAC) model supporting Super Admin, Admin, Manager, Agent, and Viewer roles with strict database isolation.',
     },
     {
       question: 'Does the CRM support real-time analytics and reporting?',
       answer:
-        'Yes. The system performs direct SQL aggregation queries to provide live metrics on total leads, active pipeline value, conversion rate by source, and team stage velocity.',
+        'Yes. The analytics engine performs direct PostgreSQL aggregation queries to generate live metrics on pipeline velocity, deal attribution by source, and team win conversion.',
     },
     {
-      question: 'How do I get started?',
+      question: 'How fast can our sales team onboard?',
       answer:
-        'You can create your organization in seconds by clicking "Get Started Free". Once registered, you can immediately begin creating leads or uploading your existing CSV prospect lists.',
+        'Organization provisioning takes less than 30 seconds. Once registered, you can immediately begin creating leads, uploading CSV or Excel prospect lists, and configuring pipeline stages.',
     },
   ];
 
@@ -54,16 +44,16 @@ export function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-20 bg-crm-background">
+    <section id="faq" className="py-20 bg-[#F6F9F9] border-b border-[#E1EBEB] text-[#071A1D]">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <span className="text-xs font-bold uppercase tracking-wider text-crm-teal">
-            Got Questions?
-          </span>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-crm-header sm:text-4xl">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
+            <HelpCircle className="h-3.5 w-3.5" /> FAQ
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#071A1D]">
             Frequently Asked Questions
           </h2>
-          <p className="mt-4 text-base text-crm-muted">
+          <p className="mt-2 text-sm text-[#4A6B6F] font-normal">
             Everything you need to know about the platform, data security, and setup.
           </p>
         </div>
@@ -74,25 +64,25 @@ export function FAQSection() {
             return (
               <div
                 key={idx}
-                className="rounded-xl border border-crm-border bg-white transition-shadow hover:shadow-xs"
+                className="rounded-xl border border-[#E1EBEB] bg-white transition-all hover:border-[#16C1C8]/60 shadow-sm overflow-hidden"
               >
                 <button
                   type="button"
                   onClick={() => toggle(idx)}
-                  className="flex w-full items-center justify-between p-5 text-left focus:outline-none focus:ring-2 focus:ring-crm-teal rounded-xl"
+                  className="flex w-full items-center justify-between p-5 text-left focus:outline-none focus:ring-1 focus:ring-[#16C1C8]"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-sm sm:text-base font-bold text-crm-header">
+                  <span className="text-sm sm:text-base font-semibold text-[#071A1D]">
                     {faq.question}
                   </span>
                   <ChevronDown
-                    className={`h-5 w-5 text-crm-muted transition-transform duration-200 shrink-0 ml-4 ${
-                      isOpen ? 'rotate-180 text-crm-teal' : ''
+                    className={`h-4 w-4 text-[#4A6B6F] transition-transform duration-200 shrink-0 ml-4 ${
+                      isOpen ? 'rotate-180 text-[#0D7F84]' : ''
                     }`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-crm-muted border-t border-slate-100 leading-relaxed">
+                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-[#4A6B6F] border-t border-slate-100 leading-relaxed font-normal">
                     {faq.answer}
                   </div>
                 )}

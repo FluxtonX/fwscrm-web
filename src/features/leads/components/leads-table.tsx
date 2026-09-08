@@ -375,15 +375,16 @@ export function LeadsTable() {
 
       {/* Bulk Action Bar (Visible when 1+ rows selected) */}
       {selectedIds.length > 0 && (
-        <div className="flex items-center justify-between rounded-lg bg-teal-50 border border-teal-200 px-4 py-2.5 text-xs animate-in fade-in">
-          <div className="flex items-center gap-2 font-medium text-teal-900">
-            <span className="font-bold">{selectedIds.length}</span> leads selected
+        <div className="flex items-center justify-between rounded-lg bg-[#0A2428] border border-[#0D2D32] px-4 py-2.5 text-xs animate-in fade-in shadow-md">
+          <div className="flex items-center gap-2 font-medium text-slate-200">
+            <span className="font-semibold text-[#16C1C8]">{selectedIds.length}</span> leads selected
           </div>
           <div className="flex items-center gap-2">
             <Button
               size="sm"
               variant="outline"
               onClick={() => setBulkStatusOpen(true)}
+              className="bg-[#0D2D32] border-[#16C1C8]/30 text-white hover:bg-[#16C1C8]/20 hover:text-[#22D3DA]"
             >
               Update Status
             </Button>
@@ -391,6 +392,7 @@ export function LeadsTable() {
               size="sm"
               variant="outline"
               onClick={() => setBulkAssignOpen(true)}
+              className="bg-[#0D2D32] border-[#16C1C8]/30 text-white hover:bg-[#16C1C8]/20 hover:text-[#22D3DA]"
             >
               Assign Owner
             </Button>
@@ -399,6 +401,7 @@ export function LeadsTable() {
               variant="outline"
               onClick={handleExportSelected}
               isLoading={isExporting}
+              className="bg-[#0D2D32] border-[#16C1C8]/30 text-white hover:bg-[#16C1C8]/20 hover:text-[#22D3DA]"
             >
               <Download className="h-3.5 w-3.5 mr-1" />
               Export Selected
@@ -414,7 +417,7 @@ export function LeadsTable() {
             )}
             <button
               onClick={() => setSelectedIds([])}
-              className="text-xs text-slate-500 hover:text-slate-800 ml-2"
+              className="text-xs text-slate-400 hover:text-white ml-2 transition-colors"
             >
               Deselect All
             </button>
@@ -426,8 +429,8 @@ export function LeadsTable() {
       <div className="overflow-hidden rounded-xl border border-crm-border bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-crm-text border-collapse">
-            {/* Table Header matching CRM visual design (#F1F5F9) */}
-            <thead className="bg-crm-table-header text-slate-600 font-semibold border-b border-crm-border select-none">
+            {/* Table Header matching CRM visual design */}
+            <thead className="bg-[#F0F6F6] text-slate-700 font-semibold border-b border-crm-border select-none">
               <tr>
                 {/* Selection Checkbox */}
                 <th className="w-10 px-3 py-3 text-center">
@@ -572,7 +575,7 @@ export function LeadsTable() {
                     <tr
                       key={lead.id}
                       className={`hover:bg-crm-table-row-hover transition-colors ${
-                        isSelected ? 'bg-teal-50/50' : ''
+                        isSelected ? 'bg-[#16C1C8]/10' : ''
                       }`}
                     >
                       {/* Checkbox */}

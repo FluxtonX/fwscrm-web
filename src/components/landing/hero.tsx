@@ -11,54 +11,60 @@ export function LandingHero() {
   const [demoOpen, setDemoOpen] = useState(false);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 pt-16 pb-24 text-white">
-      {/* Background ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-crm-teal/15 blur-[120px] rounded-full pointer-events-none" />
+    <section className="relative overflow-hidden bg-[#071A1D] pt-16 pb-24 text-white">
+      {/* Background ambient cyan glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[850px] h-[380px] bg-[#16C1C8]/15 blur-[140px] rounded-full pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
         {/* Value Prop Pill */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/30 bg-teal-950/60 px-3.5 py-1.5 text-xs font-semibold text-teal-300 shadow-sm backdrop-blur-sm mb-6">
-          <ShieldCheck className="h-3.5 w-3.5 text-crm-teal" />
-          Enterprise-Grade Lead Lifecycle Architecture
+        <div className="inline-flex items-center gap-2 rounded-full border border-[#16C1C8]/30 bg-[#0A2428] px-4 py-1.5 text-xs font-semibold text-[#22D3DA] shadow-sm backdrop-blur-sm mb-6">
+          <ShieldCheck className="h-3.5 w-3.5 text-[#16C1C8]" />
+          Enterprise Sales & Lead Operations
         </div>
 
         {/* Main Headline */}
-        <h1 className="mx-auto max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-white">
-          Turn Every Customer Interaction <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-teal-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
-            Into Predictable Growth
+        <h1 className="mx-auto max-w-4xl text-4xl font-bold tracking-tight sm:text-6xl text-white leading-[1.1]">
+          Turn Leads{' '}
+          <span className="bg-gradient-to-r from-[#16C1C8] via-[#22D3DA] to-teal-100 bg-clip-text text-transparent">
+            Into Growth.
           </span>
         </h1>
 
         {/* Supporting Copy */}
-        <p className="mx-auto mt-6 max-w-2xl text-base text-slate-300 sm:text-lg leading-relaxed">
-          Manage leads, customers, deals, tasks, communication, and team performance — all from one powerful, scalable CRM platform.
+        <p className="mx-auto mt-4 max-w-2xl text-base text-[#91B7BA] sm:text-lg leading-relaxed font-normal">
+          One intelligent workspace for your entire sales operation.
         </p>
 
         {/* Call to Actions */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link href="/register">
             <Button
               size="lg"
-              className="bg-crm-teal hover:bg-crm-teal-hover text-white shadow-lg shadow-teal-900/30 px-6 py-6 text-base font-semibold"
+              className="bg-[#16C1C8] hover:bg-[#22D3DA] text-[#071A1D] shadow-lg shadow-[#16C1C8]/25 px-6 py-5 text-sm sm:text-base font-semibold transition-all"
             >
-              Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+              Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
           <Button
             size="lg"
             variant="outline"
             onClick={() => setDemoOpen(true)}
-            className="border-slate-700 bg-slate-800/80 text-white hover:bg-slate-800 hover:border-slate-600 px-6 py-6 text-base font-semibold"
+            className="border-[#16454B] bg-[#0A2428] text-slate-200 hover:bg-[#0D2D32] hover:text-white px-6 py-5 text-sm sm:text-base font-semibold transition-all"
           >
             Book a Demo
           </Button>
         </div>
+        <div className="mt-3 text-xs text-[#91B7BA]">
+          Already have a team account?{' '}
+          <Link href="/login" className="text-[#16C1C8] hover:text-[#22D3DA] font-medium underline">
+            Sign In
+          </Link>
+        </div>
 
         {/* Live CRM Product Visualization Showcase */}
-        <div className="mt-14 mx-auto max-w-6xl rounded-2xl border border-slate-800 bg-slate-900/90 p-3 sm:p-5 shadow-2xl backdrop-blur-xl text-left">
+        <div className="mt-12 mx-auto max-w-6xl rounded-2xl border border-[#16454B] bg-[#0A2428] p-3 sm:p-5 shadow-2xl backdrop-blur-xl text-left">
           {/* Header Bar of Mock CRM */}
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div className="flex items-center justify-between border-b border-[#16454B] pb-3 mb-4">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-rose-500/80" />
               <span className="h-3 w-3 rounded-full bg-amber-500/80" />
@@ -66,72 +72,72 @@ export function LandingHero() {
               <span className="ml-3 text-xs font-mono text-slate-400">app.fwscrm.com/dashboard</span>
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="inline-block h-2 w-2 rounded-full bg-[#16C1C8] animate-pulse" />
               Live Workspace
             </div>
           </div>
 
           {/* Metric Cards Grid */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-5">
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">Total Revenue</div>
-              <div className="mt-1 text-xl sm:text-2xl font-bold text-white tracking-tight">$124,500</div>
-              <div className="mt-1 flex items-center text-[11px] font-semibold text-emerald-400">
+            <div className="rounded-xl border border-[#16454B] bg-[#071A1D]/80 p-3.5 shadow-sm">
+              <div className="text-[11px] font-medium text-[#91B7BA]">Total Won Revenue</div>
+              <div className="mt-1 text-xl sm:text-2xl font-semibold text-white tracking-tight">$124,500</div>
+              <div className="mt-1 flex items-center text-[11px] font-medium text-emerald-400">
                 <TrendingUp className="mr-1 h-3 w-3" /> +14.2% MoM
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">New Leads</div>
-              <div className="mt-1 text-xl sm:text-2xl font-bold text-white tracking-tight">248</div>
-              <div className="mt-1 flex items-center text-[11px] font-semibold text-teal-400">
+            <div className="rounded-xl border border-[#16454B] bg-[#071A1D]/80 p-3.5 shadow-sm">
+              <div className="text-[11px] font-medium text-[#91B7BA]">New Leads</div>
+              <div className="mt-1 text-xl sm:text-2xl font-semibold text-white tracking-tight">248</div>
+              <div className="mt-1 flex items-center text-[11px] font-medium text-[#22D3DA]">
                 <Users className="mr-1 h-3 w-3" /> +28 this week
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">Deals Won</div>
-              <div className="mt-1 text-xl sm:text-2xl font-bold text-white tracking-tight">42</div>
-              <div className="mt-1 flex items-center text-[11px] font-semibold text-emerald-400">
+            <div className="rounded-xl border border-[#16454B] bg-[#071A1D]/80 p-3.5 shadow-sm">
+              <div className="text-[11px] font-medium text-[#91B7BA]">Deals Won</div>
+              <div className="mt-1 text-xl sm:text-2xl font-semibold text-white tracking-tight">42</div>
+              <div className="mt-1 flex items-center text-[11px] font-medium text-emerald-400">
                 <CheckCircle className="mr-1 h-3 w-3" /> 84% quota
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3.5">
-              <div className="text-[11px] font-medium text-slate-400">Conversion Rate</div>
-              <div className="mt-1 text-xl sm:text-2xl font-bold text-white tracking-tight">18.4%</div>
-              <div className="mt-1 flex items-center text-[11px] font-semibold text-sky-400">
+            <div className="rounded-xl border border-[#16454B] bg-[#071A1D]/80 p-3.5 shadow-sm">
+              <div className="text-[11px] font-medium text-[#91B7BA]">Conversion Rate</div>
+              <div className="mt-1 text-xl sm:text-2xl font-semibold text-white tracking-tight">18.4%</div>
+              <div className="mt-1 flex items-center text-[11px] font-medium text-sky-400">
                 <Zap className="mr-1 h-3 w-3" /> Top decile
               </div>
             </div>
           </div>
 
           {/* Sales Pipeline Progression Bar */}
-          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 mb-5">
+          <div className="rounded-xl border border-[#16454B] bg-[#071A1D]/80 p-4 mb-5">
             <div className="flex items-center justify-between mb-3 text-xs font-semibold text-slate-300">
               <span>Sales Pipeline Funnel</span>
-              <span className="text-slate-400 text-[11px]">Active Opportunity Distribution</span>
+              <span className="text-[#91B7BA] text-[11px]">Active Opportunity Distribution</span>
             </div>
             <div className="grid grid-cols-5 gap-2 text-center text-xs">
-              <div className="rounded-lg bg-slate-800/80 p-2.5 border border-slate-700">
+              <div className="rounded-lg bg-[#0A2428] p-2.5 border border-[#16454B]">
                 <div className="font-semibold text-slate-200">New Leads</div>
-                <div className="text-teal-400 font-bold mt-0.5">85</div>
+                <div className="text-[#16C1C8] font-bold mt-0.5">85</div>
               </div>
-              <div className="rounded-lg bg-slate-800/80 p-2.5 border border-slate-700">
+              <div className="rounded-lg bg-[#0A2428] p-2.5 border border-[#16454B]">
                 <div className="font-semibold text-slate-200">Qualified</div>
                 <div className="text-sky-400 font-bold mt-0.5">62</div>
               </div>
-              <div className="rounded-lg bg-slate-800/80 p-2.5 border border-slate-700">
+              <div className="rounded-lg bg-[#0A2428] p-2.5 border border-[#16454B]">
                 <div className="font-semibold text-slate-200">Proposal</div>
                 <div className="text-amber-400 font-bold mt-0.5">41</div>
               </div>
-              <div className="rounded-lg bg-slate-800/80 p-2.5 border border-slate-700">
+              <div className="rounded-lg bg-[#0A2428] p-2.5 border border-[#16454B]">
                 <div className="font-semibold text-slate-200">Negotiation</div>
                 <div className="text-indigo-400 font-bold mt-0.5">28</div>
               </div>
-              <div className="rounded-lg bg-teal-950/70 p-2.5 border border-teal-600/50">
-                <div className="font-semibold text-teal-300">Won</div>
-                <div className="text-teal-400 font-bold mt-0.5">42</div>
+              <div className="rounded-lg bg-[#0D2D32] p-2.5 border border-[#16C1C8]/60 shadow-sm">
+                <div className="font-semibold text-[#22D3DA]">Won</div>
+                <div className="text-[#16C1C8] font-bold mt-0.5">42</div>
               </div>
             </div>
           </div>
@@ -139,16 +145,16 @@ export function LandingHero() {
           {/* Side-by-side Leads & Recent Activities */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Live Leads Table Snippet */}
-            <div className="lg:col-span-2 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+            <div className="lg:col-span-2 rounded-xl border border-[#16454B] bg-[#071A1D]/80 p-4">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-semibold text-slate-200">Recent Lead Submissions</span>
-                <span className="text-[11px] text-teal-400">Streaming CSV / Direct Ingestion</span>
+                <span className="text-[11px] text-[#22D3DA] font-medium">Streaming CSV / Direct Ingestion</span>
               </div>
               <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900 border border-slate-800">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#0A2428] border border-[#16454B]">
                   <div className="flex flex-col">
                     <span className="font-semibold text-white">Alexander Wright</span>
-                    <span className="text-[11px] text-slate-400">alex.wright@apexgroup.com • Canada</span>
+                    <span className="text-[11px] text-[#91B7BA]">alex.wright@apexgroup.com • Canada</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] text-slate-400 font-mono">Source: S6</span>
@@ -156,52 +162,65 @@ export function LandingHero() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900 border border-slate-800">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#0A2428] border border-[#16454B]">
                   <div className="flex flex-col">
-                    <span className="font-semibold text-white">Elena Rostova</span>
-                    <span className="text-[11px] text-slate-400">elena.r@nordictech.io • United Kingdom</span>
+                    <span className="font-semibold text-white">Sophia Chen</span>
+                    <span className="text-[11px] text-[#91B7BA]">sophia.chen@nexusmedia.io • United States</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-400 font-mono">Source: Direct</span>
-                    <Badge variant="blue">Proposal</Badge>
+                    <span className="text-[10px] text-slate-400 font-mono">Source: Google Ads</span>
+                    <Badge variant="teal">Proposal</Badge>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-2 rounded-lg bg-slate-900 border border-slate-800">
+                <div className="flex items-center justify-between p-2.5 rounded-lg bg-[#0A2428] border border-[#16454B]">
                   <div className="flex flex-col">
-                    <span className="font-semibold text-white">Marcus Sterling</span>
-                    <span className="text-[11px] text-slate-400">m.sterling@horizon.net • United States</span>
+                    <span className="font-semibold text-white">Marcus Vance</span>
+                    <span className="text-[11px] text-[#91B7BA]">m.vance@vanceholdings.co.uk • United Kingdom</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-400 font-mono">Source: S6</span>
-                    <Badge variant="emerald">Won</Badge>
+                    <span className="text-[10px] text-slate-400 font-mono">Source: Referral</span>
+                    <Badge variant="teal">Negotiation</Badge>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Live Activity Stream */}
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-              <div className="text-xs font-semibold text-slate-200 mb-3 flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-slate-400" /> Recent Team Timeline
+            {/* Live Activities Stream */}
+            <div className="rounded-xl border border-[#16454B] bg-[#071A1D]/80 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-slate-200">Live Team Feed</span>
+                <Clock className="h-3.5 w-3.5 text-slate-400" />
               </div>
-              <div className="space-y-3 text-[11px]">
-                <div className="border-l-2 border-teal-500 pl-3">
-                  <div className="font-medium text-slate-200">CSV Ingestion Processed</div>
-                  <div className="text-slate-400">500 leads imported cleanly (0 duplicates)</div>
-                  <span className="text-[10px] text-slate-500 font-mono">2 mins ago</span>
+              <div className="space-y-3 text-xs">
+                <div className="flex items-start gap-2.5 pb-2.5 border-b border-[#16454B]">
+                  <div className="h-2 w-2 rounded-full bg-[#16C1C8] mt-1.5 shrink-0" />
+                  <div>
+                    <div className="font-medium text-slate-200 leading-snug">
+                      <span className="font-semibold text-white">David Miller</span> moved Marcus Vance to <span className="text-indigo-400">Negotiation</span>
+                    </div>
+                    <div className="text-[10px] text-slate-500 mt-0.5 font-mono">2 mins ago</div>
+                  </div>
                 </div>
 
-                <div className="border-l-2 border-sky-500 pl-3">
-                  <div className="font-medium text-slate-200">Status Updated to Won</div>
-                  <div className="text-slate-400">Marcus Sterling marked as Won ($24k deal)</div>
-                  <span className="text-[10px] text-slate-500 font-mono">14 mins ago</span>
+                <div className="flex items-start gap-2.5 pb-2.5 border-b border-[#16454B]">
+                  <div className="h-2 w-2 rounded-full bg-emerald-400 mt-1.5 shrink-0" />
+                  <div>
+                    <div className="font-medium text-slate-200 leading-snug">
+                      <span className="font-semibold text-white">Elena Rostova</span> closed deal with <span className="text-emerald-400">Kinetix Bio</span>
+                    </div>
+                    <div className="text-[10px] text-slate-500 mt-0.5 font-mono">14 mins ago</div>
+                  </div>
                 </div>
 
-                <div className="border-l-2 border-indigo-500 pl-3">
-                  <div className="font-medium text-slate-200">Lead Assigned</div>
-                  <div className="text-slate-400">Auto-routed Elena Rostova to Senior Account Rep</div>
-                  <span className="text-[10px] text-slate-500 font-mono">35 mins ago</span>
+                <div className="flex items-start gap-2.5">
+                  <div className="h-2 w-2 rounded-full bg-sky-400 mt-1.5 shrink-0" />
+                  <div>
+                    <div className="font-medium text-slate-200 leading-snug">
+                      <span className="font-semibold text-white">System</span> ingested 120 leads via CSV batch
+                    </div>
+                    <div className="text-[10px] text-slate-500 mt-0.5 font-mono">1 hour ago</div>
+                  </div>
                 </div>
               </div>
             </div>

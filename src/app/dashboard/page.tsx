@@ -145,7 +145,7 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between rounded-xl border border-crm-border bg-white p-5 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-crm-header">
+            <h1 className="text-xl font-semibold tracking-tight text-crm-header">
               {greeting}, {user?.firstName || 'User'}!
             </h1>
             <Badge variant="teal" className="text-[10px] uppercase font-semibold tracking-wider">
@@ -162,73 +162,77 @@ export default function DashboardPage() {
         </div>
 
         {/* Controls: Timeframe Pills & Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Timeframe Selector Pills */}
-          <div className="inline-flex rounded-lg bg-slate-100 p-1 text-xs font-medium text-slate-600">
-            {[
-              { id: 'today', label: 'Today' },
-              { id: '7d', label: '7D' },
-              { id: '30d', label: '30D' },
-              { id: 'month', label: 'This Month' },
-              { id: 'all', label: 'All Time' },
-            ].map((t) => (
-              <button
-                key={t.id}
-                onClick={() => setTimeframe(t.id)}
-                className={`rounded-md px-2.5 py-1 transition-all ${
-                  timeframe === t.id
-                    ? 'bg-white font-bold text-crm-header shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900'
+        <div className="flex flex-col items-start sm:items-end gap-2.5 sm:ml-auto">
+          {/* Timeframe Selector Pills & Refresh */}
+          <div className="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
+            <div className="inline-flex rounded-lg bg-slate-100 p-1 text-xs font-medium text-slate-600">
+              {[
+                { id: 'today', label: 'Today' },
+                { id: '7d', label: '7D' },
+                { id: '30d', label: '30D' },
+                { id: 'month', label: 'This Month' },
+                { id: 'all', label: 'All Time' },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setTimeframe(t.id)}
+                  className={`rounded-md px-2.5 py-1 transition-all ${
+                    timeframe === t.id
+                      ? 'bg-[#16C1C8] text-[#071A1D] font-bold shadow-sm'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/60'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Manual Refresh Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              title="Refresh dashboard metrics"
+              className="h-8 px-2.5"
+            >
+              <RefreshCw
+                className={`h-3.5 w-3.5 text-crm-muted ${
+                  isFetching ? 'animate-spin text-crm-teal' : ''
                 }`}
-              >
-                {t.label}
-              </button>
-            ))}
+              />
+            </Button>
           </div>
 
-          {/* Manual Refresh Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            title="Refresh dashboard metrics"
-            className="h-8 px-2.5"
-          >
-            <RefreshCw
-              className={`h-3.5 w-3.5 text-crm-muted ${
-                isFetching ? 'animate-spin text-crm-teal' : ''
-              }`}
-            />
-          </Button>
-
-          {/* Quick Actions */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExportData}
-            isLoading={isExporting}
-            className="h-8"
-          >
-            <Download className="h-3.5 w-3.5 mr-1.5 text-crm-muted" />
-            Export Data
-          </Button>
-
-          <Link href="/dashboard/imports">
-            <Button variant="outline" size="sm" className="h-8">
-              <UploadCloud className="h-3.5 w-3.5 mr-1.5 text-crm-muted" />
-              Import CSV
+          {/* Quick Actions (Below buttons in this section) */}
+          <div className="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportData}
+              isLoading={isExporting}
+              className="h-8"
+            >
+              <Download className="h-3.5 w-3.5 mr-1.5 text-crm-muted" />
+              Export Data
             </Button>
-          </Link>
 
-          <Button
-            size="sm"
-            onClick={() => setCreateModalOpen(true)}
-            className="h-8 bg-crm-teal hover:bg-crm-teal-hover text-white"
-          >
-            <PlusCircle className="h-3.5 w-3.5 mr-1.5" />
-            New Lead
-          </Button>
+            <Link href="/dashboard/imports">
+              <Button variant="outline" size="sm" className="h-8">
+                <UploadCloud className="h-3.5 w-3.5 mr-1.5 text-crm-muted" />
+                Import CSV
+              </Button>
+            </Link>
+
+            <Button
+              size="sm"
+              onClick={() => setCreateModalOpen(true)}
+              className="h-8 bg-[#16C1C8] hover:bg-[#22D3DA] text-[#071A1D] font-semibold shadow-sm"
+            >
+              <PlusCircle className="h-3.5 w-3.5 mr-1.5" />
+              New Lead
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -293,7 +297,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-crm-header tracking-tight">
+            <div className="text-2xl font-semibold text-crm-header tracking-tight">
               {isLoading ? '...' : (overview?.totalLeads ?? 0).toLocaleString()}
             </div>
             <div className="mt-1 flex items-center gap-1 text-[11px] font-medium">
@@ -322,7 +326,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-crm-header tracking-tight">
+            <div className="text-2xl font-semibold text-crm-header tracking-tight">
               {isLoading ? '...' : (overview?.activeLeads ?? 0).toLocaleString()}
             </div>
             <p className="mt-1 text-[11px] text-sky-600 font-medium">
@@ -343,7 +347,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-crm-header tracking-tight text-emerald-700">
+            <div className="text-2xl font-semibold text-crm-header tracking-tight text-emerald-700">
               {isLoading ? '...' : (overview?.wonLeads ?? 0).toLocaleString()}
             </div>
             <p className="mt-1 text-[11px] text-emerald-600 font-medium">
@@ -361,7 +365,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-crm-header tracking-tight text-indigo-900">
+            <div className="text-2xl font-semibold text-crm-header tracking-tight text-indigo-900">
               {isLoading ? '...' : `${overview?.conversionRate ?? 0}%`}
             </div>
             <p className="mt-1 text-[11px] text-indigo-600 font-medium">
@@ -379,7 +383,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-black text-crm-header tracking-tight text-amber-800">
+            <div className="text-2xl font-semibold text-crm-header tracking-tight text-amber-800">
               {isLoading ? '...' : (overview?.duplicateLeadsPrevented ?? 0).toLocaleString()}
             </div>
             <p className="mt-1 text-[11px] text-amber-700 font-medium">
@@ -416,14 +420,14 @@ export default function DashboardPage() {
                   <UserCheck className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Unassigned Leads</div>
+                  <div className="text-xs font-semibold text-slate-900">Unassigned Leads</div>
                   <div className="text-[11px] text-slate-500">
                     Awaiting sales representative
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="text-base font-black text-amber-700">
+                <span className="text-base font-semibold text-amber-700">
                   {actionItems.unassignedCount}
                 </span>
                 <ChevronRight className="h-4 w-4 text-slate-400" />
@@ -440,14 +444,14 @@ export default function DashboardPage() {
                   <PhoneCall className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Uncontacted Leads</div>
+                  <div className="text-xs font-semibold text-slate-900">Uncontacted Leads</div>
                   <div className="text-[11px] text-slate-500">
                     In &apos;New&apos; stage awaiting touchpoint
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="text-base font-black text-sky-700">
+                <span className="text-base font-semibold text-sky-700">
                   {actionItems.uncontactedCount}
                 </span>
                 <ChevronRight className="h-4 w-4 text-slate-400" />
@@ -464,14 +468,14 @@ export default function DashboardPage() {
                   <Clock className="h-4 w-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Stale Opportunities</div>
+                  <div className="text-xs font-semibold text-slate-900">Stale Opportunities</div>
                   <div className="text-[11px] text-slate-500">
                     No activity recorded in &gt; 7 days
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="text-base font-black text-rose-700">
+                <span className="text-base font-semibold text-rose-700">
                   {actionItems.staleCount}
                 </span>
                 <ChevronRight className="h-4 w-4 text-slate-400" />
@@ -487,7 +491,7 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 rounded-xl border border-crm-border bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div>
-              <h2 className="text-sm font-bold text-crm-header">
+              <h2 className="text-sm font-semibold text-crm-header">
                 Lead Intake & Velocity Trends
               </h2>
               <p className="text-xs text-crm-muted mt-0.5">
@@ -518,8 +522,8 @@ export default function DashboardPage() {
                 >
                   <defs>
                     <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#0D9488" stopOpacity="0.28" />
-                      <stop offset="100%" stopColor="#0D9488" stopOpacity="0.0" />
+                      <stop offset="0%" stopColor="#16C1C8" stopOpacity="0.28" />
+                      <stop offset="100%" stopColor="#22D3DA" stopOpacity="0.0" />
                     </linearGradient>
                   </defs>
 
@@ -556,42 +560,133 @@ export default function DashboardPage() {
                     <path
                       d={linePath}
                       fill="none"
-                      stroke="#0D9488"
+                      stroke="#16C1C8"
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   )}
 
-                  {/* Interactive Points */}
-                  {points.map((p, idx) => (
-                    <g key={idx}>
-                      <circle
-                        cx={p.x}
-                        cy={p.y}
-                        r={hoveredTrendIndex === idx ? 5.5 : 3.5}
-                        fill="#FFFFFF"
-                        stroke="#0D9488"
-                        strokeWidth="2"
-                        className="cursor-pointer transition-all duration-150"
-                        onMouseEnter={() => setHoveredTrendIndex(idx)}
-                        onMouseLeave={() => setHoveredTrendIndex(null)}
-                      />
-                    </g>
-                  ))}
+                  {/* Vertical Guideline to hovered point */}
+                  {hoveredTrendIndex !== null && points[hoveredTrendIndex] && (
+                    <line
+                      x1={points[hoveredTrendIndex].x}
+                      y1={paddingY}
+                      x2={points[hoveredTrendIndex].x}
+                      y2={chartHeight - paddingY}
+                      stroke="#16C1C8"
+                      strokeWidth="1.5"
+                      strokeDasharray="3 3"
+                      opacity="0.8"
+                    />
+                  )}
+
+                  {/* Interactive Points & Hit Targets */}
+                  {points.map((p, idx) => {
+                    const isHovered = hoveredTrendIndex === idx;
+                    return (
+                      <g key={idx} className="cursor-pointer">
+                        {/* Hover glow ripple */}
+                        {isHovered && (
+                          <>
+                            <circle
+                              cx={p.x}
+                              cy={p.y}
+                              r="11"
+                              fill="#16C1C8"
+                              opacity="0.25"
+                            />
+                            <circle
+                              cx={p.x}
+                              cy={p.y}
+                              r="6.5"
+                              fill="#071A1D"
+                              stroke="#16C1C8"
+                              strokeWidth="2.5"
+                            />
+                          </>
+                        )}
+                        <circle
+                          cx={p.x}
+                          cy={p.y}
+                          r={isHovered ? 4.5 : 3.5}
+                          fill={isHovered ? '#16C1C8' : '#FFFFFF'}
+                          stroke="#16C1C8"
+                          strokeWidth="2"
+                          className="transition-all duration-150"
+                        />
+                        {/* Generous hit target area */}
+                        <circle
+                          cx={p.x}
+                          cy={p.y}
+                          r="20"
+                          fill="transparent"
+                          onMouseEnter={() => setHoveredTrendIndex(idx)}
+                          onMouseLeave={() => setHoveredTrendIndex(null)}
+                        />
+                      </g>
+                    );
+                  })}
                 </svg>
 
-                {/* Tooltip Overlay */}
-                {hoveredTrendIndex !== null && points[hoveredTrendIndex] && (
-                  <div
-                    className="absolute top-3 right-3 rounded-lg bg-slate-900 text-white px-3 py-1.5 text-xs shadow-lg pointer-events-none animate-in fade-in"
-                  >
-                    <div className="font-semibold text-teal-300">
-                      {points[hoveredTrendIndex].label}
+                {/* Floating Tooltip Anchored to Exact Hovered Point */}
+                {hoveredTrendIndex !== null && points[hoveredTrendIndex] && (() => {
+                  const hp = points[hoveredTrendIndex];
+                  const xPct = (hp.x / chartWidth) * 100;
+                  const yPct = (hp.y / chartHeight) * 100;
+                  const isNearTop = yPct < 32;
+
+                  return (
+                    <div
+                      className="absolute pointer-events-none z-30 transition-all duration-75 ease-out animate-in fade-in zoom-in-95"
+                      style={{
+                        left: `${xPct}%`,
+                        top: `${yPct}%`,
+                        transform: `translate(${
+                          xPct < 15 ? '0%' : xPct > 85 ? '-100%' : '-50%'
+                        }, ${isNearTop ? '14px' : 'calc(-100% - 14px)'})`,
+                      }}
+                    >
+                      <div className="rounded-xl bg-[#071A1D] text-white px-3 py-1.5 shadow-xl border border-[#16C1C8]/50 whitespace-nowrap backdrop-blur-md">
+                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#22D3DA]">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#16C1C8] shadow-[0_0_6px_#16C1C8]" />
+                          <span>{hp.label}</span>
+                        </div>
+                        <div className="text-xs font-medium text-slate-200 mt-0.5">
+                          <span className="text-sm font-bold text-white font-mono">{hp.count}</span> new leads
+                        </div>
+                      </div>
+                      {/* Down arrow pointing to exact point */}
+                      {!isNearTop && (
+                        <div
+                          className="w-2 h-2 bg-[#071A1D] border-r border-b border-[#16C1C8]/50 transform rotate-45 -mt-1"
+                          style={{
+                            marginLeft:
+                              xPct < 15
+                                ? '14px'
+                                : xPct > 85
+                                ? 'calc(100% - 20px)'
+                                : 'calc(50% - 4px)',
+                          }}
+                        />
+                      )}
+                      {/* Up arrow if tooltip displayed below point */}
+                      {isNearTop && (
+                        <div
+                          className="w-2 h-2 bg-[#071A1D] border-l border-t border-[#16C1C8]/50 transform rotate-45 -mb-1 absolute top-0 -mt-1"
+                          style={{
+                            left:
+                              xPct < 15
+                                ? '14px'
+                                : xPct > 85
+                                ? 'calc(100% - 20px)'
+                                : 'calc(50% - 4px)',
+                          }}
+                        />
+                      )}
                     </div>
-                    <div>{points[hoveredTrendIndex].count} new leads</div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               {/* X-Axis Date Labels */}
@@ -611,7 +706,7 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
               <div>
-                <h2 className="text-sm font-bold text-crm-header">Pipeline Stage Funnel</h2>
+                <h2 className="text-sm font-semibold text-crm-header">Pipeline Stage Funnel</h2>
                 <p className="text-xs text-crm-muted mt-0.5">Distribution across stages</p>
               </div>
               <Badge variant="teal">Real-Time</Badge>
@@ -628,22 +723,25 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3.5">
                 {pipeline.map((item, idx) => (
-                  <div key={item.statusId || idx}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="font-semibold text-crm-header flex items-center gap-1.5">
+                  <div
+                    key={item.statusId || idx}
+                    className="group rounded-lg p-1.5 -mx-1.5 transition-all hover:bg-teal-50/60 cursor-pointer"
+                  >
+                    <div className="flex justify-between text-xs mb-1.5">
+                      <span className="font-semibold text-crm-header group-hover:text-crm-teal flex items-center gap-1.5 transition-colors">
                         <span
-                          className="h-2 w-2 rounded-full"
+                          className="h-2 w-2 rounded-full ring-2 ring-transparent group-hover:ring-[#16C1C8]/40 transition-all"
                           style={{ backgroundColor: item.color || '#0D9488' }}
                         />
                         {item.name}
                       </span>
-                      <span className="font-mono text-crm-muted">
-                        {item.count} leads ({item.percentage}%)
+                      <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors">
+                        <span className="text-crm-header font-bold">{item.count}</span> leads ({item.percentage}%)
                       </span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                       <div
-                        className="h-full rounded-full transition-all duration-300"
+                        className="h-full rounded-full transition-all duration-300 group-hover:brightness-110 group-hover:shadow-[0_0_8px_rgba(22,193,200,0.6)]"
                         style={{
                           width: `${Math.max(item.percentage, 2)}%`,
                           backgroundColor: item.color || '#0D9488',
@@ -658,7 +756,7 @@ export default function DashboardPage() {
 
           <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
             <span className="text-crm-muted">Total in Pipeline:</span>
-            <span className="font-bold text-crm-header">
+            <span className="font-semibold text-crm-header">
               {overview?.totalLeads ?? 0} leads
             </span>
           </div>
@@ -671,7 +769,7 @@ export default function DashboardPage() {
         <div className="rounded-xl border border-crm-border bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div>
-              <h2 className="text-sm font-bold text-crm-header">
+              <h2 className="text-sm font-semibold text-crm-header">
                 Lead Source Attribution
               </h2>
               <p className="text-xs text-crm-muted mt-0.5">
@@ -692,16 +790,21 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-3.5">
               {sourceAttribution.map((src, idx) => (
-                <div key={src.name || idx}>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="font-semibold text-crm-header">{src.name}</span>
-                    <span className="font-mono text-crm-muted">
-                      {src.count} ({src.percentage}%)
+                <div
+                  key={src.name || idx}
+                  className="group rounded-lg p-1.5 -mx-1.5 transition-all hover:bg-teal-50/60 cursor-pointer"
+                >
+                  <div className="flex justify-between text-xs mb-1.5">
+                    <span className="font-semibold text-crm-header group-hover:text-crm-teal transition-colors">
+                      {src.name}
+                    </span>
+                    <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors">
+                      <span className="text-crm-header font-bold">{src.count}</span> ({src.percentage}%)
                     </span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-crm-teal transition-all duration-300"
+                      className="h-full rounded-full bg-crm-teal transition-all duration-300 group-hover:brightness-110 group-hover:shadow-[0_0_8px_rgba(22,193,200,0.6)]"
                       style={{ width: `${Math.max(src.percentage, 2)}%` }}
                     />
                   </div>
@@ -715,7 +818,7 @@ export default function DashboardPage() {
         <div className="rounded-xl border border-crm-border bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div>
-              <h2 className="text-sm font-bold text-crm-header">
+              <h2 className="text-sm font-semibold text-crm-header">
                 Team Performance
               </h2>
               <p className="text-xs text-crm-muted mt-0.5">
@@ -781,7 +884,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-crm-teal" />
-              <h2 className="text-sm font-bold text-crm-header">Recent Leads</h2>
+              <h2 className="text-sm font-semibold text-crm-header">Recent Leads</h2>
             </div>
             <Link
               href="/dashboard/leads"
@@ -854,7 +957,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-crm-teal" />
-              <h2 className="text-sm font-bold text-crm-header">
+              <h2 className="text-sm font-semibold text-crm-header">
                 Recent Organization Activity
               </h2>
             </div>

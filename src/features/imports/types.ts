@@ -44,3 +44,20 @@ export interface PaginatedImportsResponse {
     totalPages: number;
   };
 }
+
+export interface CrmFieldDefinition {
+  key: string;
+  label: string;
+  required: boolean;
+  description: string;
+}
+
+export interface ImportPreviewResponse {
+  headers: string[];
+  detectedHasHeader: boolean;
+  totalDetectedRows: number;
+  sampleRows: Record<string, string>[];
+  suggestedMapping: Record<string, string>;
+  availableFields: CrmFieldDefinition[];
+}
+

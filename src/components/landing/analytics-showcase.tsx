@@ -1,130 +1,183 @@
 'use client';
 
-import { BarChart3, TrendingUp, Users, Target, ArrowUpRight } from 'lucide-react';
+import * as React from 'react';
+import { BarChart3, TrendingUp, ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 export function AnalyticsShowcase() {
   const sources = [
-    { name: 'S6 Campaign Partner', count: 482, share: '46%', color: 'bg-crm-teal' },
-    { name: 'Organic Direct', count: 245, share: '24%', color: 'bg-sky-600' },
-    { name: 'Referral & Affiliates', count: 188, share: '18%', color: 'bg-indigo-600' },
-    { name: 'Outbound SDR', count: 125, share: '12%', color: 'bg-amber-500' },
+    { name: 'Direct Ingestion', count: 395, share: '38%', color: 'bg-[#16C1C8]' },
+    { name: 'Referral Partners', count: 302, share: '29%', color: 'bg-emerald-500' },
+    { name: 'Organic Search', count: 218, share: '21%', color: 'bg-teal-600' },
+    { name: 'Campaign Ads', count: 125, share: '12%', color: 'bg-slate-400' },
   ];
 
-  const stageVelocity = [
-    { stage: 'New -> Qualified', avgDays: '1.8 days', benchmark: 'Top 10%' },
-    { stage: 'Qualified -> Proposal', avgDays: '3.4 days', benchmark: 'Optimized' },
-    { stage: 'Proposal -> Won', avgDays: '6.2 days', benchmark: 'Target Met' },
+  const pipelineVelocity = [
+    { stage: 'New → Qualified', days: '1.4d', pct: 85, color: 'bg-teal-500' },
+    { stage: 'Qualified → Proposal', days: '2.8d', pct: 68, color: 'bg-amber-500' },
+    { stage: 'Proposal → Negotiation', days: '4.1d', pct: 54, color: 'bg-indigo-500' },
+    { stage: 'Negotiation → Won', days: '5.6d', pct: 72, color: 'bg-[#16C1C8]' },
   ];
 
   return (
-    <section id="analytics" className="py-20 bg-white border-b border-crm-border">
+    <section id="analytics" className="py-20 bg-white border-b border-[#E1EBEB] text-[#071A1D]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="text-xs font-bold uppercase tracking-wider text-crm-teal">
-            Real-Time Intelligence
-          </span>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-crm-header sm:text-4xl">
-            Turn CRM Data Into Better Decisions
-          </h2>
-          <p className="mt-4 text-base text-crm-muted sm:text-lg">
-            Monitor pipeline velocity, conversion milestones, and lead acquisition efficiency with database-level aggregation queries.
-          </p>
-        </div>
-
-        {/* Analytics Visual Card */}
-        <div className="rounded-2xl border border-crm-border bg-slate-900 p-6 sm:p-8 text-white shadow-xl">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-800">
-            <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-crm-teal" />
-                Performance Dashboard & Velocity Metrics
-              </h3>
-              <p className="text-xs text-slate-400 mt-1">
-                PostgreSQL aggregated metrics refreshed across current organization leads
-              </p>
+        {/* Minimalist Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
+              <BarChart3 className="h-3.5 w-3.5" /> Performance Analytics
             </div>
-            <Badge variant="teal">Real-time Neon Aggregates</Badge>
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#071A1D]">
+              Real-time sales telemetry.
+            </h2>
+            <p className="mt-2 text-sm text-[#4A6B6F] max-w-xl font-normal">
+              Continuous aggregation over your leads, pipeline velocity, and conversion milestones.
+            </p>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Source Distribution Breakdown */}
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-bold text-slate-200">Lead Source Attribution</span>
-                <span className="text-[11px] text-slate-400">1,040 Total Ingested</span>
-              </div>
+          <Badge variant="outline" className="text-xs font-medium text-[#0D7F84] border-teal-200 bg-teal-50">
+            PostgreSQL Real-time Engine
+          </Badge>
+        </div>
 
-              <div className="space-y-3.5">
-                {sources.map((src) => (
-                  <div key={src.name}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-300 font-medium">{src.name}</span>
-                      <span className="font-mono text-slate-400">{src.count} ({src.share})</span>
-                    </div>
-                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${src.color}`}
-                        style={{ width: src.share }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Velocity & Conversion Funnel */}
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs font-bold text-slate-200">Pipeline Stage Velocity</span>
-                <span className="text-[11px] text-emerald-400 font-semibold flex items-center">
-                  <TrendingUp className="h-3 w-3 mr-1" /> +18.4% Win Rate
+        {/* 4-Card Analytics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Card 1: Revenue Momentum with Area Curve */}
+          <div className="rounded-2xl border border-[#E1EBEB] bg-[#F8FAFA] p-5 shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-xs text-[#4A6B6F]">
+                <span>Quarterly Revenue</span>
+                <span className="flex items-center text-emerald-600 font-semibold text-[11px]">
+                  <ArrowUpRight className="h-3.5 w-3.5 mr-0.5" /> +18.4%
                 </span>
               </div>
+              <div className="text-3xl font-semibold text-[#071A1D] tracking-tight mt-1">$248,000</div>
+              <div className="text-[11px] text-[#4A6B6F] mt-0.5">Won deal attribution</div>
+            </div>
 
-              <div className="space-y-4">
-                {stageVelocity.map((stage) => (
-                  <div key={stage.stage} className="p-3 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
-                    <div>
-                      <div className="text-xs font-semibold text-slate-200">{stage.stage}</div>
-                      <div className="text-[11px] text-teal-400 font-mono mt-0.5">{stage.avgDays} avg time</div>
-                    </div>
-                    <span className="text-[10px] font-semibold bg-slate-800 text-slate-300 px-2 py-0.5 rounded">
-                      {stage.benchmark}
-                    </span>
-                  </div>
-                ))}
+            {/* Sparkline Curve */}
+            <div className="h-20 w-full mt-4">
+              <svg viewBox="0 0 200 60" className="w-full h-full overflow-visible">
+                <defs>
+                  <linearGradient id="revGradLight" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#16C1C8" stopOpacity="0.28" />
+                    <stop offset="100%" stopColor="#22D3DA" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M 0 45 Q 40 50, 70 30 T 140 22 T 200 8 L 200 60 L 0 60 Z"
+                  fill="url(#revGradLight)"
+                />
+                <path
+                  d="M 0 45 Q 40 50, 70 30 T 140 22 T 200 8"
+                  fill="none"
+                  stroke="#16C1C8"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          {/* Card 2: Circular 72% Conversion Gauge */}
+          <div className="rounded-2xl border border-[#E1EBEB] bg-[#F8FAFA] p-5 shadow-sm flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-[#4A6B6F]">
+              <span>Win Conversion</span>
+              <span className="text-[10px] text-[#0D7F84] font-mono font-semibold">Benchmark: Top 5%</span>
+            </div>
+
+            <div className="flex items-center justify-center my-2">
+              <div className="relative w-28 h-28 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                  {/* Background ring */}
+                  <path
+                    className="text-slate-200"
+                    strokeWidth="3.5"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  {/* Progress ring */}
+                  <path
+                    className="text-[#16C1C8]"
+                    strokeDasharray="72, 100"
+                    strokeLinecap="round"
+                    strokeWidth="3.5"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute flex flex-col items-center">
+                  <span className="text-2xl font-semibold text-[#071A1D] tracking-tight">72%</span>
+                  <span className="text-[9px] text-[#4A6B6F] uppercase font-medium">Closed Won</span>
+                </div>
               </div>
             </div>
 
-            {/* Ingestion & Data Quality Metrics */}
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-bold text-slate-200">Data Quality & Ingestion</span>
-                  <span className="text-[11px] text-teal-400 font-mono">Streaming Worker</span>
-                </div>
+            <div className="text-[11px] text-center text-[#4A6B6F]">
+              42 won / 58 qualified deals
+            </div>
+          </div>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center text-xs py-2 border-b border-slate-800">
-                    <span className="text-slate-400">Total Validated Records</span>
-                    <span className="font-bold text-white font-mono">12,480</span>
+          {/* Card 3: Pipeline Velocity Bars */}
+          <div className="rounded-2xl border border-[#E1EBEB] bg-[#F8FAFA] p-5 shadow-sm flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-[#4A6B6F] mb-3">
+              <span>Stage Velocity</span>
+              <span className="text-emerald-600 font-mono text-[11px] font-semibold">Avg 3.4d</span>
+            </div>
+
+            <div className="space-y-2.5">
+              {pipelineVelocity.map((stage) => (
+                <div key={stage.stage}>
+                  <div className="flex justify-between text-[11px] mb-1">
+                    <span className="text-slate-700 truncate">{stage.stage}</span>
+                    <span className="font-mono text-[#0D7F84] font-semibold shrink-0 ml-1">{stage.days}</span>
                   </div>
-                  <div className="flex justify-between items-center text-xs py-2 border-b border-slate-800">
-                    <span className="text-slate-400">Duplicates Filtered</span>
-                    <span className="font-bold text-amber-400 font-mono">312 prevented</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs py-2 border-b border-slate-800">
-                    <span className="text-slate-400">Average Import Latency</span>
-                    <span className="font-bold text-emerald-400 font-mono">1.2ms / row</span>
+                  <div className="h-1.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${stage.color}`}
+                      style={{ width: `${stage.pct}%` }}
+                    />
                   </div>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              <div className="mt-4 pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
-                <span>Database query optimization active</span>
-                <ArrowUpRight className="h-3.5 w-3.5 text-crm-teal" />
-              </div>
+            <div className="text-[10px] text-[#4A6B6F] mt-3 pt-2 border-t border-slate-200 flex justify-between">
+              <span>Cycle efficiency</span>
+              <span className="text-[#071A1D] font-semibold">98.2% on pace</span>
+            </div>
+          </div>
+
+          {/* Card 4: Lead Sources Breakdown */}
+          <div className="rounded-2xl border border-[#E1EBEB] bg-[#F8FAFA] p-5 shadow-sm flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-[#4A6B6F] mb-3">
+              <span>Source Attribution</span>
+              <span className="text-[11px] font-mono text-slate-500">1,040 leads</span>
+            </div>
+
+            <div className="space-y-2.5">
+              {sources.map((src) => (
+                <div key={src.name}>
+                  <div className="flex justify-between text-[11px] mb-1">
+                    <span className="text-slate-700">{src.name}</span>
+                    <span className="font-mono text-[#4A6B6F]">{src.share}</span>
+                  </div>
+                  <div className="h-1.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full ${src.color}`}
+                      style={{ width: src.share }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-[10px] text-[#4A6B6F] mt-3 pt-2 border-t border-slate-200 flex justify-between">
+              <span>Top Channel</span>
+              <span className="text-[#0D7F84] font-semibold">Direct CSV Stream</span>
             </div>
           </div>
         </div>

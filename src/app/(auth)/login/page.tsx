@@ -45,8 +45,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-crm-background px-4 py-12">
       <div className="w-full max-w-md space-y-6 rounded-xl border border-crm-border bg-white p-8 shadow-sm transition-all">
         <div className="text-center">
-          <Link href="/" className="inline-block text-2xl font-bold tracking-tight text-crm-header hover:opacity-90 transition-opacity">
-            <span className="text-crm-teal">FWS</span> CRM
+          <Link href="/" className="inline-block text-2xl font-semibold tracking-tight text-crm-header hover:opacity-90 transition-opacity">
+            <span className="text-[#16C1C8] font-bold">FWS</span> CRM
           </Link>
           <h2 className="mt-3 text-lg font-semibold text-crm-header">
             Sign in to your account
@@ -85,7 +85,7 @@ export default function LoginPage() {
               </label>
               <Link
                 href="/forgot-password"
-                className="text-xs font-medium text-crm-teal hover:text-crm-teal-hover transition-colors"
+                className="text-[11px] font-semibold text-[#16C1C8] hover:underline"
               >
                 Forgot password?
               </Link>
@@ -101,19 +101,18 @@ export default function LoginPage() {
 
           <Button
             type="submit"
-            className="w-full mt-2 font-semibold bg-crm-teal hover:bg-crm-teal-hover transition-all"
+            className="w-full bg-[#16C1C8] hover:bg-[#22D3DA] text-[#071A1D] font-semibold"
             isLoading={isSubmitting}
-            disabled={isSubmitting}
           >
-            {isSubmitting ? 'Signing In...' : 'Sign In'}
+            Sign In
           </Button>
         </form>
 
-        <div className="border-t border-slate-100 pt-4 text-center text-xs text-crm-muted">
-          Don&apos;t have an organization account?{' '}
+        <div className="text-center text-xs text-crm-muted">
+          Don&apos;t have an account?{' '}
           <Link
             href="/register"
-            className="font-semibold text-crm-teal hover:text-crm-teal-hover transition-colors"
+            className="font-semibold text-[#16C1C8] hover:underline"
           >
             Register Organization
           </Link>

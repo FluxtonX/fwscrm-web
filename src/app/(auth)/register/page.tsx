@@ -83,9 +83,9 @@ export default function RegisterPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="inline-block text-2xl font-bold tracking-tight text-crm-header hover:opacity-90 transition-opacity"
+            className="inline-block text-2xl font-semibold tracking-tight text-crm-header hover:opacity-90 transition-opacity"
           >
-            <span className="text-crm-teal">FWS</span> CRM
+            <span className="text-[#16C1C8] font-bold">FWS</span> CRM
           </Link>
           <h2 className="mt-3 text-lg font-semibold text-crm-header">
             Create your CRM Organization
@@ -198,7 +198,7 @@ export default function RegisterPage() {
 
           <Button
             type="submit"
-            className="w-full mt-2 font-semibold bg-crm-teal hover:bg-crm-teal-hover transition-all"
+            className="w-full mt-2 font-semibold bg-[#16C1C8] hover:bg-[#22D3DA] text-[#071A1D] transition-all"
             isLoading={isSubmitting}
             disabled={isSubmitting}
           >
@@ -212,7 +212,7 @@ export default function RegisterPage() {
           Already have an account?{' '}
           <Link
             href="/login"
-            className="font-semibold text-crm-teal hover:text-crm-teal-hover transition-colors"
+            className="font-semibold text-[#16C1C8] hover:underline"
           >
             Sign In
           </Link>

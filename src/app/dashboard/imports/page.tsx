@@ -32,10 +32,10 @@ export default function ImportsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold tracking-tight text-crm-header">
-          CSV Lead Import
+          Spreadsheet Lead Import
         </h1>
         <p className="text-xs text-crm-muted mt-0.5">
-          Stream high-volume CSV files directly into the CRM database with duplicate detection.
+          Upload CSV or XLSX spreadsheets with interactive column mapping, pre-persistence preview, and automatic deduplication.
         </p>
       </div>
 

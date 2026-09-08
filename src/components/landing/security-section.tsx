@@ -1,59 +1,63 @@
-import { Shield, KeyRound, Lock, FileCode, CheckCircle } from 'lucide-react';
+'use client';
+
+import * as React from 'react';
+import { Shield, KeyRound, Building2, Cloud, CheckCircle2 } from 'lucide-react';
 
 export function SecuritySection() {
-  const securityPillars = [
+  const pillars = [
     {
-      title: 'Signed HttpOnly Cookie Authentication',
-      description: 'Tokens are never stored in localStorage or JavaScript-accessible browser memory, eliminating XSS token theft vectors entirely.',
+      title: 'Secure Authentication',
+      subtitle: 'Signed HttpOnly session cookies with cryptographic token rotation.',
       icon: KeyRound,
     },
     {
-      title: 'Query-Level Multi-Tenant Isolation',
-      description: 'Every database query strictly enforces the authoritative organization ID extracted directly from the verified cryptographic session.',
-      icon: Lock,
-    },
-    {
-      title: 'Hierarchical Role-Based Access (RBAC)',
-      description: 'Fine-grained server-side guards protecting all routes across Super Admin, Admin, Manager, Agent, and Viewer tiers.',
+      title: 'Role-Based Access',
+      subtitle: '5-tier hierarchical authorization guards protecting every operation.',
       icon: Shield,
     },
     {
-      title: 'SQL Injection Prevention & Data Integrity',
-      description: 'Zero raw SQL string concatenation. Prisma ORM strictly parameterizes all database queries and schema validations.',
-      icon: FileCode,
+      title: 'Multi-Tenant Architecture',
+      subtitle: 'Query-level organization isolation ensuring complete database privacy.',
+      icon: Building2,
+    },
+    {
+      title: 'Cloud Infrastructure',
+      subtitle: 'Serverless Neon PostgreSQL pooling and BullMQ asynchronous queues.',
+      icon: Cloud,
     },
   ];
 
   return (
-    <section id="security" className="py-20 bg-white border-y border-crm-border">
+    <section id="security" className="py-16 bg-white border-b border-[#E1EBEB] text-[#071A1D]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-xs font-bold uppercase tracking-wider text-crm-teal">
-            Enterprise Security
-          </span>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-crm-header sm:text-4xl">
-            Protection Engineered at Every Layer
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
+            <Shield className="h-3.5 w-3.5" /> Enterprise Trust
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#071A1D]">
+            Built with uncompromising security.
           </h2>
-          <p className="mt-4 text-base text-crm-muted sm:text-lg">
-            Built with uncompromising data privacy, strict tenant isolation, and modern web application security standards.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {securityPillars.map((pillar) => {
+        {/* 4 Compact Visual Indicator Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {pillars.map((pillar) => {
             const Icon = pillar.icon;
             return (
               <div
                 key={pillar.title}
-                className="flex items-start gap-4 rounded-2xl border border-crm-border bg-slate-50/50 p-6 transition-all hover:bg-white hover:shadow-sm"
+                className="rounded-xl border border-[#E1EBEB] bg-[#F8FAFA] p-4 flex flex-col justify-between shadow-sm transition-all hover:border-[#16C1C8]/60"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-crm-teal">
-                  <Icon className="h-6 w-6" />
-                </div>
                 <div>
-                  <h3 className="text-base font-bold text-crm-header">{pillar.title}</h3>
-                  <p className="mt-1.5 text-xs sm:text-sm text-crm-muted leading-relaxed">
-                    {pillar.description}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 border border-teal-100 text-[#0D7F84]">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-[#071A1D]">{pillar.title}</h3>
+                  <p className="mt-1 text-xs text-[#4A6B6F] leading-relaxed font-normal">
+                    {pillar.subtitle}
                   </p>
                 </div>
               </div>

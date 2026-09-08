@@ -63,12 +63,12 @@ export default function ForgotPasswordPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="inline-block text-2xl font-bold tracking-tight text-crm-header hover:opacity-90 transition-opacity"
+            className="inline-block text-2xl font-semibold tracking-tight text-crm-header hover:opacity-90 transition-opacity"
           >
-            <span className="text-crm-teal">FWS</span> CRM
+            <span className="text-[#16C1C8] font-bold">FWS</span> CRM
           </Link>
           <h2 className="mt-3 text-lg font-semibold text-crm-header flex items-center justify-center gap-2">
-            <KeyRound className="h-5 w-5 text-crm-teal" />
+            <KeyRound className="h-5 w-5 text-[#16C1C8]" />
             Direct Password Reset
           </h2>
           <p className="mt-1 text-xs text-crm-muted">
@@ -86,15 +86,15 @@ export default function ForgotPasswordPage() {
         {isSuccess ? (
           <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-5 text-center space-y-3">
             <CheckCircle2 className="h-10 w-10 text-emerald-600 mx-auto" />
-            <h3 className="text-sm font-bold text-emerald-900">
+            <h3 className="text-sm font-semibold text-emerald-900">
               Password Reset Successfully
             </h3>
-            <p className="text-xs text-emerald-700 leading-relaxed">
+            <p className="text-xs text-emerald-700 leading-relaxed font-normal">
               Your account password has been updated securely. You can now sign in with your new credentials.
             </p>
             <div className="pt-2">
               <Link href="/login" className="block w-full">
-                <Button className="w-full bg-crm-teal hover:bg-crm-teal-hover text-white">
+                <Button className="w-full bg-[#16C1C8] hover:bg-[#22D3DA] text-[#071A1D] font-semibold">
                   Sign In with New Password
                 </Button>
               </Link>
@@ -144,7 +144,7 @@ export default function ForgotPasswordPage() {
 
             <Button
               type="submit"
-              className="w-full mt-2 font-semibold bg-crm-teal hover:bg-crm-teal-hover transition-all"
+              className="w-full mt-2 font-semibold bg-[#16C1C8] hover:bg-[#22D3DA] text-[#071A1D] transition-all"
               isLoading={isSubmitting}
               disabled={isSubmitting}
             >
