@@ -4,6 +4,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { usePermissions } from '@/features/auth/use-permissions';
 import {
   Users,
   UploadCloud,
@@ -29,6 +30,7 @@ const navigationItems = [
     label: 'Imports',
     href: '/dashboard/imports',
     icon: UploadCloud,
+    permission: 'imports.access',
   },
   {
     label: 'Activities',
@@ -44,6 +46,7 @@ const navigationItems = [
     label: 'Team & Users',
     href: '/dashboard/users',
     icon: UserCheck,
+    permission: 'user.view',
   },
   {
     label: 'Settings',
@@ -54,6 +57,13 @@ const navigationItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { can } = usePermissions();
+
+  const visibleItems = React.useMemo(() => {
+    return navigationItems.filter(
+      (item) => !item.permission || can(item.permission),
+    );
+  }, [can]);
 
   return (
     <aside className="w-56 shrink-0 bg-[#0A2428] text-slate-300 border-r border-[#0D2D32] flex flex-col justify-between select-none h-full overflow-y-auto sidebar-scroll">
@@ -62,7 +72,7 @@ export function AppSidebar() {
           CRM Navigation
         </div>
         <nav className="space-y-1 px-2">
-          {navigationItems.map((item) => {
+          {visibleItems.map((item) => {
             const isActive =
               pathname === item.href ||
               (item.href !== '/dashboard' && pathname.startsWith(item.href));

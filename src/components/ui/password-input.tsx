@@ -29,16 +29,22 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
           />
           <button
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowPassword((prev) => !prev);
+            }}
             disabled={disabled}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 focus:outline-none focus:text-crm-teal disabled:opacity-50 transition-colors"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 p-1 text-slate-400 hover:text-slate-600 focus:outline-none focus:text-crm-teal disabled:opacity-50 transition-colors cursor-pointer select-none"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-pressed={showPassword}
             tabIndex={-1}
           >
             {showPassword ? (
-              <EyeOff className="h-4 w-4" />
+              <EyeOff className="h-4 w-4 pointer-events-none" />
             ) : (
-              <Eye className="h-4 w-4" />
+              <Eye className="h-4 w-4 pointer-events-none" />
             )}
           </button>
         </div>
