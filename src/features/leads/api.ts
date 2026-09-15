@@ -9,6 +9,7 @@ import {
   CreateLeadInput,
   LeadActivity,
   LeadNote,
+  LeadReminder,
 } from './types';
 
 export async function fetchLeads(params: QueryLeadsParams = {}): Promise<PaginatedLeadsResponse> {
@@ -16,7 +17,9 @@ export async function fetchLeads(params: QueryLeadsParams = {}): Promise<Paginat
   if (params.page) query.set('page', params.page.toString());
   if (params.limit) query.set('limit', params.limit.toString());
   if (params.search) query.set('search', params.search);
+  if (params.preset) query.set('preset', params.preset);
   if (params.status) query.set('status', params.status);
+
   if (params.country) query.set('country', params.country);
   if (params.leadSource) query.set('leadSource', params.leadSource);
   if (params.ownerId) query.set('ownerId', params.ownerId);
@@ -72,6 +75,17 @@ export async function bulkDeleteLeads(leadIds: string[]): Promise<{ count: numbe
   });
 }
 
+export async function bulkTagLeads(
+  leadIds: string[],
+  tag: string,
+  action: 'ADD' | 'REMOVE' | 'SET' = 'ADD',
+): Promise<{ count: number }> {
+  return apiClient<{ count: number }>('/leads/bulk/tag', {
+    method: 'POST',
+    body: JSON.stringify({ leadIds, tag, action }),
+  });
+}
+
 export async function fetchLeadStatuses(): Promise<LeadStatus[]> {
   return apiClient<LeadStatus[]>('/leads/meta/statuses');
 }
@@ -90,6 +104,9 @@ export interface UserItem {
   lastName: string;
   email: string;
   role: string;
+  _count?: {
+    ownedLeads?: number;
+  };
 }
 
 export async function fetchUsers(): Promise<UserItem[]> {
@@ -121,6 +138,42 @@ export async function updateLeadNote(leadId: string, noteId: string, content: st
 
 export async function deleteLeadNote(leadId: string, noteId: string): Promise<{ success: boolean }> {
   return apiClient<{ success: boolean }>(`/leads/${leadId}/notes/${noteId}`, {
+    method: 'DELETE',
+  });
+}
+
+// Reminders API functions
+export async function fetchLeadReminders(leadId: string): Promise<LeadReminder[]> {
+  return apiClient<LeadReminder[]>(`/leads/${leadId}/reminders`);
+}
+
+export async function createLeadReminder(
+  leadId: string,
+  data: { title: string; dueDate: string; assignedUserId?: string },
+): Promise<LeadReminder> {
+  return apiClient<LeadReminder>(`/leads/${leadId}/reminders`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateLeadReminder(
+  leadId: string,
+  reminderId: string,
+  data: Partial<{ title: string; dueDate: string; isCompleted: boolean; assignedUserId?: string }>,
+): Promise<LeadReminder> {
+  return apiClient<LeadReminder>(`/leads/${leadId}/reminders/${reminderId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+
+export async function deleteLeadReminder(
+  leadId: string,
+  reminderId: string,
+): Promise<{ success: boolean }> {
+  return apiClient<{ success: boolean }>(`/leads/${leadId}/reminders/${reminderId}`, {
     method: 'DELETE',
   });
 }

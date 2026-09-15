@@ -286,6 +286,89 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Phase 2D: Follow-Up Action Center */}
+      <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-crm-border pb-3 mb-3">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-teal-50 text-crm-teal">
+              <Clock className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-crm-header">
+                Follow-Up Action Center
+              </h3>
+              <p className="text-[11px] text-crm-muted">
+                Real-time operational queue for scheduled customer touchpoints
+              </p>
+            </div>
+          </div>
+          <Link href="/dashboard/leads">
+            <Button variant="ghost" size="sm" className="h-7 text-xs text-crm-teal hover:text-crm-teal-hover hover:bg-teal-50">
+              View All Leads <ChevronRight className="h-3.5 w-3.5 ml-1" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Overdue */}
+          <Link
+            href="/dashboard/leads?preset=overdue"
+            className="flex items-center justify-between p-3 rounded-lg border border-rose-100 bg-rose-50/50 hover:bg-rose-100/60 hover:border-rose-300 transition-all shadow-2xs hover:shadow-xs group cursor-pointer"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-rose-500 animate-pulse" />
+              <div>
+                <div className="text-xs font-semibold text-rose-900 group-hover:underline flex items-center gap-1">
+                  Overdue Follow-ups <ChevronRight className="h-3 w-3 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <div className="text-[11px] text-rose-700">Immediate callback required</div>
+              </div>
+            </div>
+            <div className="text-xl font-bold text-rose-700 font-mono">
+              {isLoading ? '...' : (actionItems?.overdueFollowUpsCount ?? 0)}
+            </div>
+          </Link>
+
+          {/* Due Today */}
+          <Link
+            href="/dashboard/leads?preset=follow_up_today"
+            className="flex items-center justify-between p-3 rounded-lg border border-amber-100 bg-amber-50/50 hover:bg-amber-100/60 hover:border-amber-300 transition-all shadow-2xs hover:shadow-xs group cursor-pointer"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-amber-500" />
+              <div>
+                <div className="text-xs font-semibold text-amber-900 group-hover:underline flex items-center gap-1">
+                  Due Today <ChevronRight className="h-3 w-3 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <div className="text-[11px] text-amber-700">Scheduled for today&apos;s outreach</div>
+              </div>
+            </div>
+            <div className="text-xl font-bold text-amber-700 font-mono">
+              {isLoading ? '...' : (actionItems?.dueTodayFollowUpsCount ?? 0)}
+            </div>
+          </Link>
+
+          {/* Upcoming */}
+          <Link
+            href="/dashboard/leads"
+            className="flex items-center justify-between p-3 rounded-lg border border-sky-100 bg-sky-50/50 hover:bg-sky-100/60 hover:border-sky-300 transition-all shadow-2xs hover:shadow-xs group cursor-pointer"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-2.5 w-2.5 rounded-full bg-sky-500" />
+              <div>
+                <div className="text-xs font-semibold text-sky-900 group-hover:underline flex items-center gap-1">
+                  Upcoming Follow-ups <ChevronRight className="h-3 w-3 text-sky-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <div className="text-[11px] text-sky-700">Scheduled for later this week</div>
+              </div>
+            </div>
+            <div className="text-xl font-bold text-sky-700 font-mono">
+              {isLoading ? '...' : (actionItems?.upcomingFollowUpsCount ?? 0)}
+            </div>
+          </Link>
+        </div>
+      </div>
+
       {/* 3. Primary KPI Metrics Grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {/* Total Leads */}

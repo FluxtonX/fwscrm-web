@@ -56,8 +56,12 @@ export interface ActionItemsOverview {
   unassignedCount: number;
   uncontactedCount: number;
   staleCount: number;
+  overdueFollowUpsCount?: number;
+  dueTodayFollowUpsCount?: number;
+  upcomingFollowUpsCount?: number;
   items: ActionItem[];
 }
+
 
 export interface RecentLeadItem {
   id: string;

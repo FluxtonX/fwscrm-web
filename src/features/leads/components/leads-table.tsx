@@ -18,7 +18,15 @@ import {
   CheckSquare,
   Square,
   RotateCcw,
+  Users,
+  UserCheck,
+  Clock,
+  AlertTriangle,
+  Calendar,
+  Tag,
 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -45,26 +53,40 @@ import {
 import { CreateLeadModal } from './create-lead-modal';
 import { EditLeadModal } from './edit-lead-modal';
 import { LeadDetailModal } from './lead-detail-modal';
+import { LeadHealthBadge } from './lead-health-badge';
 import {
   BulkStatusModal,
   BulkDeleteDialog,
   BulkAssignModal,
+  BulkTagModal,
 } from './bulk-modals';
 
 export function LeadsTable() {
   const { user } = useAuth();
   const toast = useToast();
 
+  const searchParams = useSearchParams();
+
   // Query state
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(25);
   const [search, setSearch] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
+  const [presetTab, setPresetTab] = React.useState('all');
   const [statusFilter, setStatusFilter] = React.useState('');
   const [countryFilter, setCountryFilter] = React.useState('');
   const [sourceFilter, setSourceFilter] = React.useState('');
   const [sortField, setSortField] = React.useState('createdAt');
   const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('desc');
+
+  // Synchronize URL search params (e.g. /dashboard/leads?preset=overdue)
+  React.useEffect(() => {
+    const p = searchParams?.get('preset');
+    if (p) {
+      setPresetTab(p);
+    }
+  }, [searchParams]);
+
 
   // Selection state
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
@@ -78,6 +100,7 @@ export function LeadsTable() {
     referrer: true,
     tag1: true,
     owner: true,
+    health: true,
   });
   const [showColumnMenu, setShowColumnMenu] = React.useState(false);
 
@@ -87,6 +110,7 @@ export function LeadsTable() {
   const [detailLead, setDetailLead] = React.useState<Lead | null>(null);
   const [bulkStatusOpen, setBulkStatusOpen] = React.useState(false);
   const [bulkAssignOpen, setBulkAssignOpen] = React.useState(false);
+  const [bulkTagOpen, setBulkTagOpen] = React.useState(false);
   const [bulkDeleteOpen, setBulkDeleteOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
 
@@ -125,6 +149,7 @@ export function LeadsTable() {
         page,
         limit,
         search: debouncedSearch || undefined,
+        preset: presetTab !== 'all' ? presetTab : undefined,
         status: statusFilter || undefined,
         country: countryFilter || undefined,
         leadSource: sourceFilter || undefined,
@@ -137,7 +162,8 @@ export function LeadsTable() {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, debouncedSearch, statusFilter, countryFilter, sourceFilter, sortField, sortOrder, toast]);
+  }, [page, limit, debouncedSearch, presetTab, statusFilter, countryFilter, sourceFilter, sortField, sortOrder, toast]);
+
 
   React.useEffect(() => {
     loadLeads();
@@ -226,7 +252,41 @@ export function LeadsTable() {
 
   return (
     <div className="space-y-4 select-none">
+      {/* Phase 4: Smart Filter Presets Bar */}
+      <div className="flex items-center gap-1.5 border-b border-crm-border pb-3 overflow-x-auto select-none">
+        {[
+          { id: 'all', label: 'All Leads', icon: Users },
+          { id: 'my_leads', label: 'My Leads', icon: UserCheck },
+          { id: 'follow_up_today', label: 'Follow-Up Today', icon: Clock },
+          { id: 'overdue', label: 'Overdue Follow-ups', icon: AlertTriangle },
+          { id: 'unassigned', label: 'Unassigned', icon: Filter },
+          { id: 'recent', label: 'Recently Added', icon: Calendar },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = presetTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => {
+                setPresetTab(tab.id);
+                setPage(1);
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                isActive
+                  ? 'bg-[#16C1C8] text-[#071A1D] shadow-xs'
+                  : 'bg-white border border-crm-border text-crm-muted hover:text-crm-text hover:bg-slate-50'
+              }`}
+            >
+              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-[#071A1D]' : 'text-crm-muted'}`} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Top Action Toolbar */}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-crm-border bg-white p-4 shadow-sm">
         {/* Left: Search input */}
         <div className="relative w-full sm:w-72">
@@ -399,6 +459,15 @@ export function LeadsTable() {
             <Button
               size="sm"
               variant="outline"
+              onClick={() => setBulkTagOpen(true)}
+              className="bg-[#0D2D32] border-[#16C1C8]/30 text-white hover:bg-[#16C1C8]/20 hover:text-[#22D3DA]"
+            >
+              <Tag className="h-3.5 w-3.5 mr-1 text-crm-teal" />
+              Tag Leads
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
               onClick={handleExportSelected}
               isLoading={isExporting}
               className="bg-[#0D2D32] border-[#16C1C8]/30 text-white hover:bg-[#16C1C8]/20 hover:text-[#22D3DA]"
@@ -536,6 +605,11 @@ export function LeadsTable() {
                   <th className="px-4 py-3">Owner</th>
                 )}
 
+                {/* Health / Priority */}
+                {visibleColumns.health && (
+                  <th className="px-4 py-3">Health</th>
+                )}
+
                 {/* Actions */}
                 <th className="w-12 px-3 py-3 text-right">Actions</th>
               </tr>
@@ -545,7 +619,7 @@ export function LeadsTable() {
             <tbody className="divide-y divide-crm-border">
               {loading ? (
                 <tr>
-                  <td colSpan={11} className="py-12 text-center text-crm-muted">
+                  <td colSpan={12} className="py-12 text-center text-crm-muted">
                     <div className="flex flex-col items-center justify-center gap-2">
                       <Spinner size="md" />
                       <span>Loading leads from server...</span>
@@ -554,7 +628,7 @@ export function LeadsTable() {
                 </tr>
               ) : leadsData?.data.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="p-8">
+                  <td colSpan={12} className="p-8">
                     <EmptyState
                       title="No leads found"
                       description={
@@ -684,6 +758,13 @@ export function LeadsTable() {
                           ) : (
                             <span className="text-slate-400 italic">Unassigned</span>
                           )}
+                        </td>
+                      )}
+
+                      {/* Health / Priority */}
+                      {visibleColumns.health && (
+                        <td className="px-4 py-2.5 whitespace-nowrap">
+                          <LeadHealthBadge lead={lead} compact />
                         </td>
                       )}
 
@@ -835,6 +916,16 @@ export function LeadsTable() {
       <BulkAssignModal
         open={bulkAssignOpen}
         onOpenChange={setBulkAssignOpen}
+        selectedIds={selectedIds}
+        onSuccess={() => {
+          setSelectedIds([]);
+          loadLeads();
+        }}
+      />
+
+      <BulkTagModal
+        open={bulkTagOpen}
+        onOpenChange={setBulkTagOpen}
         selectedIds={selectedIds}
         onSuccess={() => {
           setSelectedIds([]);

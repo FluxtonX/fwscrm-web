@@ -49,6 +49,20 @@ export interface LeadNote {
   user: LeadUser;
 }
 
+export interface LeadReminder {
+  id: string;
+  organizationId: string;
+  leadId: string;
+  userId: string;
+  title: string;
+  dueDate: string;
+  isCompleted: boolean;
+  status?: 'OVERDUE' | 'DUE_TODAY' | 'UPCOMING' | 'COMPLETED';
+  createdAt: string;
+  updatedAt: string;
+  user?: LeadUser | null;
+}
+
 export interface Lead {
   id: string;
   organizationId: string;
@@ -69,6 +83,7 @@ export interface Lead {
   ownerId?: string | null;
   owner?: LeadUser | null;
   notes?: LeadNote[];
+  reminders?: LeadReminder[];
   activities?: LeadActivity[];
   createdAt: string;
   updatedAt: string;
@@ -90,6 +105,7 @@ export interface QueryLeadsParams {
   page?: number;
   limit?: number;
   search?: string;
+  preset?: string;
   status?: string;
   country?: string;
   leadSource?: string;
@@ -97,6 +113,7 @@ export interface QueryLeadsParams {
   sort?: string;
   order?: 'asc' | 'desc';
 }
+
 
 export interface CreateLeadInput {
   firstName: string;
