@@ -112,6 +112,13 @@ export async function createLeadNote(leadId: string, content: string): Promise<L
   });
 }
 
+export async function updateLeadNote(leadId: string, noteId: string, content: string): Promise<LeadNote> {
+  return apiClient<LeadNote>(`/leads/${leadId}/notes/${noteId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ content }),
+  });
+}
+
 export async function deleteLeadNote(leadId: string, noteId: string): Promise<{ success: boolean }> {
   return apiClient<{ success: boolean }>(`/leads/${leadId}/notes/${noteId}`, {
     method: 'DELETE',

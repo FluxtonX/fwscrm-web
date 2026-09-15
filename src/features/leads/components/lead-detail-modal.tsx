@@ -26,11 +26,15 @@ import {
   Trash2,
   Send,
   Loader2,
+  Check,
+  X,
+  AlertTriangle,
 } from 'lucide-react';
 import {
   fetchLeadNotes,
   fetchLeadActivities,
   createLeadNote,
+  updateLeadNote,
   deleteLeadNote,
 } from '../api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -51,8 +55,19 @@ export function LeadDetailModal({
 }: LeadDetailModalProps) {
   const [activeTab, setActiveTab] = React.useState<'overview' | 'notes' | 'timeline'>('overview');
   const [newNoteContent, setNewNoteContent] = React.useState('');
+  const [editingNoteId, setEditingNoteId] = React.useState<string | null>(null);
+  const [editingContent, setEditingContent] = React.useState('');
+  const [deletingNoteId, setDeletingNoteId] = React.useState<string | null>(null);
+
   const queryClient = useQueryClient();
   const { user } = useAuth();
+
+  // Role permissions: Only Super Admin, Admin, and Manager may Edit or Delete notes.
+  // Operator can View and Add notes, but MUST NOT edit or delete notes.
+  const canEditOrDeleteNotes =
+    user?.role === 'SUPER_ADMIN' ||
+    user?.role === 'ADMIN' ||
+    user?.role === 'MANAGER';
 
   // Fetch Notes
   const { data: notes = [], isLoading: isLoadingNotes } = useQuery<LeadNote[]>({
@@ -81,6 +96,20 @@ export function LeadDetailModal({
     },
   });
 
+  // Update Note Mutation
+  const updateNoteMutation = useMutation({
+    mutationFn: ({ noteId, content }: { noteId: string; content: string }) => {
+      if (!lead) throw new Error('No lead selected');
+      return updateLeadNote(lead.id, noteId, content);
+    },
+    onSuccess: () => {
+      setEditingNoteId(null);
+      setEditingContent('');
+      queryClient.invalidateQueries({ queryKey: ['lead-notes', lead?.id] });
+      queryClient.invalidateQueries({ queryKey: ['lead-activities', lead?.id] });
+    },
+  });
+
   // Delete Note Mutation
   const deleteNoteMutation = useMutation({
     mutationFn: (noteId: string) => {
@@ -88,6 +117,7 @@ export function LeadDetailModal({
       return deleteLeadNote(lead.id, noteId);
     },
     onSuccess: () => {
+      setDeletingNoteId(null);
       queryClient.invalidateQueries({ queryKey: ['lead-notes', lead?.id] });
       queryClient.invalidateQueries({ queryKey: ['lead-activities', lead?.id] });
     },
@@ -97,6 +127,22 @@ export function LeadDetailModal({
     e.preventDefault();
     if (!newNoteContent.trim() || createNoteMutation.isPending) return;
     createNoteMutation.mutate(newNoteContent.trim());
+  };
+
+  const handleStartEdit = (note: LeadNote) => {
+    setEditingNoteId(note.id);
+    setEditingContent(note.content);
+    setDeletingNoteId(null);
+  };
+
+  const handleSaveEdit = (noteId: string) => {
+    if (!editingContent.trim() || updateNoteMutation.isPending) return;
+    updateNoteMutation.mutate({ noteId, content: editingContent.trim() });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingNoteId(null);
+    setEditingContent('');
   };
 
   if (!lead) return null;
@@ -296,13 +342,13 @@ export function LeadDetailModal({
                 ) : (
                   <Send className="h-3.5 w-3.5" />
                 )}
-                Save Note
+                Add Note
               </Button>
             </div>
           </form>
 
           {/* Notes List */}
-          <div className="max-h-60 overflow-y-auto space-y-2 pt-2 border-t border-slate-100">
+          <div className="max-h-64 overflow-y-auto space-y-2 pt-2 border-t border-slate-100 pr-1">
             {isLoadingNotes ? (
               <div className="py-6 text-center text-crm-muted">Loading notes...</div>
             ) : notes.length === 0 ? (
@@ -310,36 +356,139 @@ export function LeadDetailModal({
                 No notes logged yet for this lead.
               </div>
             ) : (
-              notes.map((note) => (
-                <div
-                  key={note.id}
-                  className="rounded-lg border border-slate-100 bg-slate-50/70 p-3 space-y-1.5 transition-colors hover:bg-slate-50"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-crm-header">
-                      {note.user.firstName} {note.user.lastName}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        {new Date(note.createdAt).toLocaleString()}
-                      </span>
-                      {(user?.id === note.userId ||
-                        user?.role === 'ADMIN' ||
-                        user?.role === 'SUPER_ADMIN') && (
-                        <button
-                          type="button"
-                          onClick={() => deleteNoteMutation.mutate(note.id)}
-                          className="text-slate-400 hover:text-rose-600 transition-colors"
-                          title="Delete note"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      )}
+              notes.map((note) => {
+                const isEditing = editingNoteId === note.id;
+                const isDeleting = deletingNoteId === note.id;
+                const isEdited =
+                  note.updatedAt &&
+                  new Date(note.updatedAt).getTime() > new Date(note.createdAt).getTime() + 1000;
+
+                return (
+                  <div
+                    key={note.id}
+                    className="rounded-lg border border-slate-100 bg-slate-50/70 p-3 space-y-2 transition-colors hover:bg-slate-50"
+                  >
+                    {/* Header: Author, Role, Timestamp, Controls */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-crm-header">
+                          {note.user.firstName} {note.user.lastName}
+                        </span>
+                        {note.user.role && (
+                          <span className="rounded bg-slate-200/80 px-1.5 py-0.5 text-[10px] font-medium text-slate-700 capitalize">
+                            {note.user.role.toLowerCase().replace('_', ' ')}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {new Date(note.createdAt).toLocaleString()}
+                          {isEdited && <span className="ml-1 italic text-slate-400">(edited)</span>}
+                        </span>
+
+                        {/* Edit / Delete Buttons (Visible ONLY for Super Admin, Admin, Manager; Hidden for Operator) */}
+                        {canEditOrDeleteNotes && !isEditing && !isDeleting && (
+                          <div className="flex items-center gap-1 ml-1">
+                            <button
+                              type="button"
+                              onClick={() => handleStartEdit(note)}
+                              className="p-1 rounded text-slate-400 hover:text-crm-teal hover:bg-slate-200/60 transition-colors"
+                              title="Edit note"
+                            >
+                              <Edit3 className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeletingNoteId(note.id)}
+                              className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-slate-200/60 transition-colors"
+                              title="Delete note"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
+                    {/* Content / Inline Edit Mode */}
+                    {isEditing ? (
+                      <div className="space-y-2 pt-1">
+                        <textarea
+                          value={editingContent}
+                          onChange={(e) => setEditingContent(e.target.value)}
+                          rows={3}
+                          className="w-full rounded-md border border-crm-teal bg-white p-2 text-xs text-crm-text focus:outline-none focus:ring-1 focus:ring-crm-teal resize-none"
+                        />
+                        <div className="flex justify-end gap-1.5">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={handleCancelEdit}
+                            disabled={updateNoteMutation.isPending}
+                            className="h-7 px-2.5 text-xs"
+                          >
+                            <X className="h-3 w-3 mr-1" /> Cancel
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => handleSaveEdit(note.id)}
+                            disabled={!editingContent.trim() || updateNoteMutation.isPending}
+                            className="h-7 px-2.5 text-xs bg-crm-teal hover:bg-crm-teal-hover text-white"
+                          >
+                            {updateNoteMutation.isPending ? (
+                              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                            ) : (
+                              <Check className="h-3 w-3 mr-1" />
+                            )}
+                            Save
+                          </Button>
+                        </div>
+                      </div>
+                    ) : isDeleting ? (
+                      <div className="rounded-md border border-rose-200 bg-rose-50 p-2.5 space-y-2 text-rose-800 animate-in fade-in">
+                        <div className="flex items-center gap-1.5 font-medium text-xs">
+                          <AlertTriangle className="h-3.5 w-3.5 text-rose-600 shrink-0" />
+                          <span>Delete this note permanently?</span>
+                        </div>
+                        <div className="flex justify-end gap-1.5">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setDeletingNoteId(null)}
+                            disabled={deleteNoteMutation.isPending}
+                            className="h-7 px-2 text-xs border-rose-300 text-slate-700 bg-white hover:bg-slate-50"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => deleteNoteMutation.mutate(note.id)}
+                            disabled={deleteNoteMutation.isPending}
+                            className="h-7 px-2.5 text-xs"
+                          >
+                            {deleteNoteMutation.isPending ? (
+                              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                            ) : (
+                              <Trash2 className="h-3 w-3 mr-1" />
+                            )}
+                            Confirm Delete
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-slate-700 whitespace-pre-wrap text-xs leading-relaxed">
+                        {note.content}
+                      </p>
+                    )}
                   </div>
-                  <p className="text-slate-700 whitespace-pre-wrap">{note.content}</p>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
