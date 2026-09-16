@@ -34,6 +34,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/features/auth/auth-context';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   fetchLeads,
   fetchLeadStatuses,
@@ -64,6 +65,7 @@ import {
 export function LeadsTable() {
   const { user } = useAuth();
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const searchParams = useSearchParams();
 
@@ -72,39 +74,30 @@ export function LeadsTable() {
   const [limit, setLimit] = React.useState(25);
   const [search, setSearch] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
-  const [presetTab, setPresetTab] = React.useState('all');
+  const [presetTab, setPresetTab] = React.useState(() => searchParams?.get('preset') || 'all');
   const [statusFilter, setStatusFilter] = React.useState('');
   const [countryFilter, setCountryFilter] = React.useState('');
   const [sourceFilter, setSourceFilter] = React.useState('');
   const [sortField, setSortField] = React.useState('createdAt');
   const [sortOrder, setSortOrder] = React.useState<'asc' | 'desc'>('desc');
 
-  // Synchronize URL search params (e.g. /dashboard/leads?preset=overdue)
-  React.useEffect(() => {
-    const p = searchParams?.get('preset');
-    if (p) {
-      setPresetTab(p);
-    }
-  }, [searchParams]);
-
-
-  // Selection state
+  // UI & Selection state
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
-
-  // Column visibility state
-  const [visibleColumns, setVisibleColumns] = React.useState({
-    phone: true,
-    country: true,
-    status: true,
-    source: true,
-    referrer: true,
-    tag1: true,
-    owner: true,
-    health: true,
-  });
+  const [isExporting, setIsExporting] = React.useState(false);
   const [showColumnMenu, setShowColumnMenu] = React.useState(false);
+  const [visibleColumns, setVisibleColumns] = React.useState<Record<string, boolean>>({
+    name: true,
+    email: true,
+    phone: true,
+    company: true,
+    status: true,
+    health: true,
+    country: true,
+    source: true,
+    createdAt: true,
+  });
 
-  // Modals state
+  // Modal states
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [editLead, setEditLead] = React.useState<Lead | null>(null);
   const [detailLead, setDetailLead] = React.useState<Lead | null>(null);
@@ -112,62 +105,41 @@ export function LeadsTable() {
   const [bulkAssignOpen, setBulkAssignOpen] = React.useState(false);
   const [bulkTagOpen, setBulkTagOpen] = React.useState(false);
   const [bulkDeleteOpen, setBulkDeleteOpen] = React.useState(false);
-  const [isExporting, setIsExporting] = React.useState(false);
-
-  // Data fetching state
-  const [leadsData, setLeadsData] = React.useState<PaginatedLeadsResponse | null>(null);
-  const [statuses, setStatuses] = React.useState<LeadStatus[]>([]);
-  const [sources, setSources] = React.useState<LeadSource[]>([]);
-  const [countries, setCountries] = React.useState<Country[]>([]);
-  const [loading, setLoading] = React.useState(true);
 
   // Debounce search input
   React.useEffect(() => {
-    const handler = setTimeout(() => {
+    const timer = setTimeout(() => {
       setDebouncedSearch(search);
       setPage(1);
-    }, 350);
-    return () => clearTimeout(handler);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [search]);
 
-  // Load reference metadata
-  React.useEffect(() => {
-    Promise.all([fetchLeadStatuses(), fetchLeadSources(), fetchCountries()])
-      .then(([st, src, c]) => {
-        setStatuses(st);
-        setSources(src);
-        setCountries(c);
-      })
-      .catch((err) => console.error('Error fetching metadata', err));
-  }, []);
+  // TanStack Queries
+  const { data: leadsData, isLoading: loading } = useQuery<PaginatedLeadsResponse>({
+    queryKey: ['leads', { page, limit, search: debouncedSearch, preset: presetTab, status: statusFilter, country: countryFilter, source: sourceFilter, sortField, sortOrder }],
+    queryFn: () => fetchLeads({ page, limit, search: debouncedSearch, preset: presetTab, status: statusFilter, country: countryFilter, leadSource: sourceFilter, sort: sortField, order: sortOrder }),
+  });
 
-  // Fetch leads
-  const loadLeads = React.useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetchLeads({
-        page,
-        limit,
-        search: debouncedSearch || undefined,
-        preset: presetTab !== 'all' ? presetTab : undefined,
-        status: statusFilter || undefined,
-        country: countryFilter || undefined,
-        leadSource: sourceFilter || undefined,
-        sort: sortField,
-        order: sortOrder,
-      });
-      setLeadsData(res);
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to load leads');
-    } finally {
-      setLoading(false);
-    }
-  }, [page, limit, debouncedSearch, presetTab, statusFilter, countryFilter, sourceFilter, sortField, sortOrder, toast]);
+  const { data: statuses = [] } = useQuery<LeadStatus[]>({
+    queryKey: ['lead-statuses'],
+    queryFn: fetchLeadStatuses,
+  });
 
+  const { data: sources = [] } = useQuery<LeadSource[]>({
+    queryKey: ['lead-sources'],
+    queryFn: fetchLeadSources,
+  });
 
-  React.useEffect(() => {
-    loadLeads();
-  }, [loadLeads]);
+  const { data: countries = [] } = useQuery<Country[]>({
+    queryKey: ['countries'],
+    queryFn: fetchCountries,
+  });
+
+  const loadLeads = React.useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['leads'] });
+    queryClient.invalidateQueries({ queryKey: ['dashboard-payload'] });
+  }, [queryClient]);
 
   // Handle Sort
   const handleSort = (field: string) => {
@@ -179,6 +151,21 @@ export function LeadsTable() {
     }
     setPage(1);
   };
+
+  // Synchronize URL search params (e.g. /dashboard/leads?preset=upcoming&leadId=123)
+  React.useEffect(() => {
+    const p = searchParams?.get('preset');
+    if (p) {
+      setPresetTab(p);
+    }
+    const targetLeadId = searchParams?.get('leadId');
+    if (targetLeadId && leadsData?.data) {
+      const found = leadsData.data.find((l) => l.id === targetLeadId);
+      if (found) {
+        setDetailLead(found);
+      }
+    }
+  }, [searchParams, leadsData]);
 
   // Selection handlers
   const handleSelectAll = () => {
@@ -259,6 +246,7 @@ export function LeadsTable() {
           { id: 'my_leads', label: 'My Leads', icon: UserCheck },
           { id: 'follow_up_today', label: 'Follow-Up Today', icon: Clock },
           { id: 'overdue', label: 'Overdue Follow-ups', icon: AlertTriangle },
+          { id: 'upcoming', label: 'Upcoming Follow-ups', icon: Clock },
           { id: 'unassigned', label: 'Unassigned', icon: Filter },
           { id: 'recent', label: 'Recently Added', icon: Calendar },
         ].map((tab) => {

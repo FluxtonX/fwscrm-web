@@ -350,7 +350,7 @@ export default function DashboardPage() {
 
           {/* Upcoming */}
           <Link
-            href="/dashboard/leads"
+            href="/dashboard/leads?preset=upcoming"
             className="flex items-center justify-between p-3 rounded-lg border border-sky-100 bg-sky-50/50 hover:bg-sky-100/60 hover:border-sky-300 transition-all shadow-2xs hover:shadow-xs group cursor-pointer"
           >
             <div className="flex items-center gap-2.5">

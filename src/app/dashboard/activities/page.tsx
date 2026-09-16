@@ -34,9 +34,9 @@ export default function ActivitiesPage() {
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: ['activities-stream'],
+    queryKey: ['dashboard-payload', '30d'],
     queryFn: () => fetchDashboard('30d'),
-    staleTime: 1000 * 30, // 30s
+    staleTime: 1000 * 60 * 2,
   });
 
   // Filter activities by type & search

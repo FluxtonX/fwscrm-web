@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useAuth } from '@/features/auth/auth-context';
 import { LogOut, Building2, User as UserIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { NotificationBell } from '@/features/notifications/components/notification-bell';
 
 export function AppHeader() {
   const { user, organization, logout } = useAuth();
@@ -41,6 +42,9 @@ export function AppHeader() {
             >
               {user.role}
             </Badge>
+
+            {/* Real-Time Notification Bell */}
+            <NotificationBell />
 
             <button
               onClick={() => logout()}

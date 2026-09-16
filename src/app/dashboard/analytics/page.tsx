@@ -38,7 +38,7 @@ export default function AnalyticsPage() {
     refetch,
     error,
   } = useQuery({
-    queryKey: ['analytics-full-payload', timeframe],
+    queryKey: ['dashboard-payload', timeframe],
     queryFn: () => fetchDashboard(timeframe),
     staleTime: 1000 * 60 * 2,
   });
