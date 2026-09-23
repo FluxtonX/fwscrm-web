@@ -6,8 +6,6 @@ export type UserRole =
   | 'AGENT'
   | 'VIEWER';
 
-export type InvitationStatus = 'INVITED' | 'ACCEPTED' | 'EXPIRED' | 'REVOKED';
-
 export interface UserItem {
   id: string;
   organizationId: string;
@@ -20,35 +18,13 @@ export interface UserItem {
   updatedAt: string;
 }
 
-export interface InvitationItem {
-  id: string;
+export interface CreateMemberInput {
   email: string;
-  role: UserRole;
-  status: InvitationStatus;
-  expiresAt: string;
-  acceptedAt: string | null;
-  revokedAt: string | null;
-  createdAt: string;
-  organizationName?: string;
-  invitedBy: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
+  password: string;
+  confirmPassword: string;
+  role: 'MANAGER' | 'OPERATOR';
+  firstName?: string;
+  lastName?: string;
 }
 
-export interface InviteUserInput {
-  email: string;
-  role: UserRole;
-}
 
-export interface InviteUserResponse {
-  invitation: InvitationItem;
-  activationUrl: string;
-  emailDelivery?: {
-    success: boolean;
-    provider: string;
-    messageId?: string;
-  };
-}
