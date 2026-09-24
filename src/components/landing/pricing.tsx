@@ -70,10 +70,10 @@ export function PricingSection() {
           <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
             <Sparkles className="h-3.5 w-3.5" /> Predictable Pricing
           </div>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#071A1D]">
+          <h2 className="crm-section-title text-[#071A1D]">
             Simple plans that scale with your volume.
           </h2>
-          <p className="mt-2 text-sm text-[#4A6B6F] font-normal">
+          <p className="crm-body mt-2 text-[#4A6B6F]">
             No hidden limits. Zero lock-in. Transparent pricing designed for growing sales operations.
           </p>
         </div>
@@ -91,7 +91,7 @@ export function PricingSection() {
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className={`text-xl font-semibold ${plan.highlighted ? 'text-white' : 'text-[#071A1D]'}`}>
+                  <h3 className={`crm-card-title text-xl font-bold ${plan.highlighted ? 'text-white' : 'text-[#071A1D]'}`}>
                     {plan.name}
                   </h3>
                   {plan.badge && (
@@ -100,22 +100,22 @@ export function PricingSection() {
                     </span>
                   )}
                 </div>
-                <p className={`text-xs mb-6 leading-relaxed font-normal ${plan.highlighted ? 'text-[#91B7BA]' : 'text-[#4A6B6F]'}`}>
+                <p className={`text-xs mb-6 leading-relaxed font-normal ${plan.highlighted ? 'text-slate-200' : 'text-[#4A6B6F]'}`}>
                   {plan.description}
                 </p>
 
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className={`text-4xl font-semibold tracking-tight ${plan.highlighted ? 'text-white' : 'text-[#071A1D]'}`}>
+                  <span className={`crm-metric text-4xl font-bold ${plan.highlighted ? 'text-white' : 'text-[#071A1D]'}`}>
                     {plan.price}
                   </span>
-                  <span className={`text-xs ${plan.highlighted ? 'text-[#91B7BA]' : 'text-[#4A6B6F]'}`}>{plan.period}</span>
+                  <span className={`text-xs ${plan.highlighted ? 'text-slate-300 font-medium' : 'text-[#4A6B6F]'}`}>{plan.period}</span>
                 </div>
 
                 <div className={`pt-4 border-t ${plan.highlighted ? 'border-[#16454B]' : 'border-slate-100'}`}>
-                  <div className={`text-[11px] font-semibold uppercase tracking-wider mb-3 ${plan.highlighted ? 'text-[#22D3DA]' : 'text-[#0D7F84]'}`}>
+                  <div className={`crm-label uppercase tracking-wider mb-3 ${plan.highlighted ? 'text-[#22D3DA]' : 'text-[#0D7F84]'}`}>
                     Included capabilities:
                   </div>
-                  <ul className={`space-y-2.5 text-xs ${plan.highlighted ? 'text-slate-200' : 'text-slate-700'}`}>
+                  <ul className={`space-y-2.5 text-xs ${plan.highlighted ? 'text-slate-100 font-medium' : 'text-slate-700'}`}>
                     {plan.features.map((feat, idx) => (
                       <li key={idx} className="flex items-start gap-2.5">
                         <Check className={`h-4 w-4 shrink-0 mt-0.5 ${plan.highlighted ? 'text-[#16C1C8]' : 'text-[#0D7F84]'}`} />

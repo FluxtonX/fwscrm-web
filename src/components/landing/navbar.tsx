@@ -43,7 +43,7 @@ export function LandingNavbar() {
           </div>
           <div className="flex flex-col">
             <span className="leading-none text-base">FWS <span className="text-[#16C1C8] font-bold">CRM</span></span>
-            <span className="text-[10px] text-slate-400 tracking-wider uppercase font-medium">Enterprise Suite</span>
+            <span className="text-[10px] text-[#91B7BA] tracking-wider uppercase font-medium">Enterprise Suite</span>
           </div>
         </Link>
 
@@ -53,7 +53,7 @@ export function LandingNavbar() {
             <a
               key={link.label}
               href={link.href}
-              className="text-xs font-medium text-slate-300 hover:text-[#22D3DA] transition-colors focus:outline-none focus:ring-2 focus:ring-[#16C1C8] rounded px-1.5 py-0.5"
+              className="text-xs font-medium text-slate-200 hover:text-[#22D3DA] transition-colors focus:outline-none focus:ring-2 focus:ring-[#16C1C8] rounded px-1.5 py-0.5"
             >
               {link.label}
             </a>
@@ -64,7 +64,7 @@ export function LandingNavbar() {
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/login"
-            className="text-xs font-semibold text-slate-300 hover:text-white transition-colors px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#16C1C8] rounded-md"
+            className="text-xs font-semibold text-slate-200 hover:text-white transition-colors px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#16C1C8] rounded-md"
           >
             Log In
           </Link>

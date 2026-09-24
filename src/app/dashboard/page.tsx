@@ -148,20 +148,21 @@ export default function DashboardPage() {
       {/* 1. Header & Command Controls */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between rounded-xl border border-crm-border bg-white p-5 shadow-sm">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight text-crm-header">
-              {greeting}, {user?.firstName || 'User'}!
+          <div className="flex items-center gap-2.5">
+            <h1 className="crm-page-title">
+              {greeting}, {user?.firstName || 'User'}
             </h1>
             <Badge variant="teal" className="text-[10px] uppercase font-semibold tracking-wider">
               {user?.role || 'Agent'}
             </Badge>
           </div>
-          <p className="mt-1 text-xs text-crm-muted">
-            Workspace:{' '}
-            <span className="font-semibold text-crm-text">
-              {organization?.name || 'My CRM'}
-            </span>{' '}
-            • Real-time analytics & operational command center
+          <p className="mt-1 crm-caption flex items-center gap-2">
+            <span className="font-medium text-slate-700">{organization?.name || 'Workspace'}</span>
+            <span className="text-slate-300">•</span>
+            <span className="inline-flex items-center gap-1 text-crm-teal font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-crm-teal animate-pulse" />
+              Live Workspace
+            </span>
           </p>
         </div>
 
@@ -290,7 +291,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Phase 2D: Follow-Up Action Center */}
+      {/* Follow-Up Action Center */}
       <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-crm-border pb-3 mb-3">
           <div className="flex items-center gap-2">
@@ -298,12 +299,8 @@ export default function DashboardPage() {
               <Clock className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-crm-header">
-                Follow-Up Action Center
-              </h3>
-              <p className="text-[11px] text-crm-muted">
-                Real-time operational queue for scheduled customer touchpoints
-              </p>
+              <h3 className="crm-card-title">Follow-Up Action Center</h3>
+              <p className="crm-caption">Active operational queue</p>
             </div>
           </div>
           <Link href="/dashboard/leads">
@@ -323,9 +320,9 @@ export default function DashboardPage() {
               <span className="flex h-2.5 w-2.5 rounded-full bg-rose-500 animate-pulse" />
               <div>
                 <div className="text-xs font-semibold text-rose-900 group-hover:underline flex items-center gap-1">
-                  Overdue Follow-ups <ChevronRight className="h-3 w-3 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Overdue <ChevronRight className="h-3 w-3 text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <div className="text-[11px] text-rose-700">Immediate callback required</div>
+                <div className="text-[11px] text-rose-700/80">Immediate attention</div>
               </div>
             </div>
             <div className="text-xl font-bold text-rose-700 font-mono">
@@ -344,7 +341,7 @@ export default function DashboardPage() {
                 <div className="text-xs font-semibold text-amber-900 group-hover:underline flex items-center gap-1">
                   Due Today <ChevronRight className="h-3 w-3 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <div className="text-[11px] text-amber-700">Scheduled for today&apos;s outreach</div>
+                <div className="text-[11px] text-amber-700/80">Today&apos;s schedule</div>
               </div>
             </div>
             <div className="text-xl font-bold text-amber-700 font-mono">
@@ -361,9 +358,9 @@ export default function DashboardPage() {
               <span className="flex h-2.5 w-2.5 rounded-full bg-sky-500" />
               <div>
                 <div className="text-xs font-semibold text-sky-900 group-hover:underline flex items-center gap-1">
-                  Upcoming Follow-ups <ChevronRight className="h-3 w-3 text-sky-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Upcoming <ChevronRight className="h-3 w-3 text-sky-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <div className="text-[11px] text-sky-700">Scheduled for later this week</div>
+                <div className="text-[11px] text-sky-700/80">Later this week</div>
               </div>
             </div>
             <div className="text-xl font-bold text-sky-700 font-mono">
@@ -374,108 +371,114 @@ export default function DashboardPage() {
       </div>
 
       {/* 3. Primary KPI Metrics Grid */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-5">
         {/* Total Leads */}
-        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm relative overflow-hidden">
+        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm relative overflow-hidden transition-all hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-crm-muted">Total Leads</span>
-            <div className="rounded-lg bg-teal-50 p-2 text-crm-teal">
+            <span className="crm-label">Total Leads</span>
+            <div className="rounded-lg bg-teal-50 p-1.5 text-crm-teal">
               <Users className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-semibold text-crm-header tracking-tight">
+            <div className="crm-metric">
               {isLoading ? '...' : (overview?.totalLeads ?? 0).toLocaleString()}
             </div>
-            <div className="mt-1 flex items-center gap-1 text-[11px] font-medium">
+            <div className="mt-1 flex items-center gap-1.5 text-[11px]">
               {(overview?.leadsGrowthRate ?? 0) >= 0 ? (
-                <span className="flex items-center text-emerald-600">
+                <span className="inline-flex items-center font-semibold text-emerald-600">
                   <ArrowUpRight className="h-3 w-3 mr-0.5" />
                   +{overview?.leadsGrowthRate ?? 0}%
                 </span>
               ) : (
-                <span className="flex items-center text-rose-600">
+                <span className="inline-flex items-center font-semibold text-rose-600">
                   <ArrowDownRight className="h-3 w-3 mr-0.5" />
                   {overview?.leadsGrowthRate ?? 0}%
                 </span>
               )}
-              <span className="text-slate-400">vs prev period</span>
+              <span className="crm-caption">vs 30d</span>
             </div>
           </div>
         </div>
 
         {/* Active Pipeline Leads */}
-        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm transition-all hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-crm-muted">Active in Pipeline</span>
-            <div className="rounded-lg bg-sky-50 p-2 text-sky-600">
+            <span className="crm-label">In Pipeline</span>
+            <div className="rounded-lg bg-sky-50 p-1.5 text-sky-600">
               <Flame className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-semibold text-crm-header tracking-tight">
+            <div className="crm-metric text-sky-950">
               {isLoading ? '...' : (overview?.activeLeads ?? 0).toLocaleString()}
             </div>
-            <p className="mt-1 text-[11px] text-sky-600 font-medium">
-              {overview?.totalLeads
-                ? Math.round(((overview.activeLeads || 0) / overview.totalLeads) * 100)
-                : 0}
-              % of total leads
-            </p>
+            <div className="mt-1 flex items-center gap-1 text-[11px]">
+              <span className="font-semibold text-sky-600 font-mono">
+                {overview?.totalLeads
+                  ? Math.round(((overview.activeLeads || 0) / overview.totalLeads) * 100)
+                  : 0}
+                %
+              </span>
+              <span className="crm-caption">of volume</span>
+            </div>
           </div>
         </div>
 
         {/* Won Leads */}
-        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm transition-all hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-crm-muted">Won Deals</span>
-            <div className="rounded-lg bg-emerald-50 p-2 text-emerald-600">
+            <span className="crm-label">Won Deals</span>
+            <div className="rounded-lg bg-emerald-50 p-1.5 text-emerald-600">
               <Award className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-semibold text-crm-header tracking-tight text-emerald-700">
+            <div className="crm-metric text-emerald-700">
               {isLoading ? '...' : (overview?.wonLeads ?? 0).toLocaleString()}
             </div>
-            <p className="mt-1 text-[11px] text-emerald-600 font-medium">
-              Closed opportunities
-            </p>
+            <div className="mt-1 flex items-center gap-1 text-[11px]">
+              <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                <CheckCircle2 className="h-3 w-3" />
+                Closed
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Conversion Rate */}
-        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm transition-all hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-crm-muted">Conversion Rate</span>
-            <div className="rounded-lg bg-indigo-50 p-2 text-indigo-600">
+            <span className="crm-label">Conversion</span>
+            <div className="rounded-lg bg-indigo-50 p-1.5 text-indigo-600">
               <CheckCircle2 className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-semibold text-crm-header tracking-tight text-indigo-900">
+            <div className="crm-metric text-indigo-900">
               {isLoading ? '...' : `${overview?.conversionRate ?? 0}%`}
             </div>
-            <p className="mt-1 text-[11px] text-indigo-600 font-medium">
-              Lead to customer win rate
-            </p>
+            <div className="mt-1 flex items-center gap-1 text-[11px]">
+              <span className="crm-caption">Win rate</span>
+            </div>
           </div>
         </div>
 
         {/* Duplicate Shield */}
-        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm col-span-2 sm:col-span-1">
+        <div className="rounded-xl border border-crm-border bg-white p-4 shadow-sm col-span-2 sm:col-span-1 transition-all hover:shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-crm-muted">Duplicate Shield</span>
-            <div className="rounded-lg bg-amber-50 p-2 text-amber-600">
+            <span className="crm-label">Duplicate Shield</span>
+            <div className="rounded-lg bg-amber-50 p-1.5 text-amber-600">
               <ShieldCheck className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-semibold text-crm-header tracking-tight text-amber-800">
+            <div className="crm-metric text-amber-800">
               {isLoading ? '...' : (overview?.duplicateLeadsPrevented ?? 0).toLocaleString()}
             </div>
-            <p className="mt-1 text-[11px] text-amber-700 font-medium">
-              Duplicates blocked
-            </p>
+            <div className="mt-1 flex items-center gap-1 text-[11px]">
+              <span className="crm-caption">Blocked</span>
+            </div>
           </div>
         </div>
       </div>
@@ -578,14 +581,14 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 rounded-xl border border-crm-border bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div>
-              <h2 className="text-sm font-semibold text-crm-header">
-                Lead Intake & Velocity Trends
+              <h2 className="crm-section-title">
+                Intake Velocity Trends
               </h2>
-              <p className="text-xs text-crm-muted mt-0.5">
-                New lead registrations across the selected timeframe
+              <p className="crm-caption mt-0.5">
+                Lead registrations across timeframe
               </p>
             </div>
-            <Badge variant="teal">Intake Velocity</Badge>
+            <Badge variant="teal" className="text-[10px] font-semibold">Intake Velocity</Badge>
           </div>
 
           {isLoading ? (
@@ -793,10 +796,10 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
               <div>
-                <h2 className="text-sm font-semibold text-crm-header">Pipeline Stage Funnel</h2>
-                <p className="text-xs text-crm-muted mt-0.5">Distribution across stages</p>
+                <h2 className="crm-section-title">Pipeline Funnel</h2>
+                <p className="crm-caption mt-0.5">Stage progression</p>
               </div>
-              <Badge variant="teal">Real-Time</Badge>
+              <Badge variant="teal" className="text-[10px] font-semibold">Real-Time</Badge>
             </div>
 
             {isLoading ? (
@@ -823,8 +826,8 @@ export default function DashboardPage() {
                           />
                           {item.name}
                         </span>
-                        <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors">
-                          <span className="text-crm-header font-bold">{item.count}</span> leads ({item.percentage}%)
+                        <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors text-[11px]">
+                          <span className="text-crm-header font-bold">{item.count}</span> ({item.percentage}%)
                         </span>
                       </div>
                       <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
@@ -878,14 +881,14 @@ export default function DashboardPage() {
         <div className="rounded-xl border border-crm-border bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div>
-              <h2 className="text-sm font-semibold text-crm-header">
-                Lead Source Attribution
+              <h2 className="crm-section-title">
+                Source Attribution
               </h2>
-              <p className="text-xs text-crm-muted mt-0.5">
-                Acquisition channels and referral partners
+              <p className="crm-caption mt-0.5">
+                Acquisition channels
               </p>
             </div>
-            <Badge variant="blue">Attribution</Badge>
+            <Badge variant="blue" className="text-[10px] font-semibold">Attribution</Badge>
           </div>
 
           {isLoading ? (
@@ -907,7 +910,7 @@ export default function DashboardPage() {
                     <span className="font-semibold text-crm-header group-hover:text-crm-teal transition-colors">
                       {src.name}
                     </span>
-                    <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors">
+                    <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors text-[11px]">
                       <span className="text-crm-header font-bold">{src.count}</span> ({src.percentage}%)
                     </span>
                   </div>
@@ -927,14 +930,14 @@ export default function DashboardPage() {
         <div className="rounded-xl border border-crm-border bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div>
-              <h2 className="text-sm font-semibold text-crm-header">
+              <h2 className="crm-section-title">
                 Team Performance
               </h2>
-              <p className="text-xs text-crm-muted mt-0.5">
-                Active representatives and opportunity conversion
+              <p className="crm-caption mt-0.5">
+                Representative conversion
               </p>
             </div>
-            <Badge variant="teal">Sales Reps</Badge>
+            <Badge variant="teal" className="text-[10px] font-semibold">Sales Reps</Badge>
           </div>
 
           {isLoading ? (
@@ -958,24 +961,24 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <div className="font-semibold text-crm-header">{member.name}</div>
-                      <div className="text-[11px] text-slate-400">{member.email}</div>
+                      <div className="text-[11px] text-slate-400 font-mono">{member.email}</div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4 text-right">
                     <div>
-                      <div className="font-bold text-crm-header">
+                      <div className="font-bold text-crm-header font-mono">
                         {member.assignedCount}
                       </div>
                       <div className="text-[10px] text-slate-400">Assigned</div>
                     </div>
                     <div>
-                      <div className="font-bold text-emerald-600">
+                      <div className="font-bold text-emerald-600 font-mono">
                         {member.wonCount}
                       </div>
                       <div className="text-[10px] text-slate-400">Won</div>
                     </div>
-                    <Badge variant="teal" className="text-[10px]">
+                    <Badge variant="teal" className="text-[10px] font-mono">
                       {member.conversionRate}% Win
                     </Badge>
                   </div>
@@ -993,7 +996,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4 text-crm-teal" />
-              <h2 className="text-sm font-semibold text-crm-header">Recent Leads</h2>
+              <h2 className="crm-section-title">Recent Leads</h2>
             </div>
             <Link
               href="/dashboard/leads"
@@ -1026,7 +1029,7 @@ export default function DashboardPage() {
                       <div className="font-semibold text-crm-header">
                         {lead.firstName} {lead.lastName}
                       </div>
-                      <div className="text-[11px] text-slate-500">{lead.email}</div>
+                      <div className="text-[11px] text-slate-500 font-mono">{lead.email}</div>
                     </div>
                   </div>
 
@@ -1066,8 +1069,8 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-crm-teal" />
-              <h2 className="text-sm font-semibold text-crm-header">
-                Recent Organization Activity
+              <h2 className="crm-section-title">
+                Recent Activity
               </h2>
             </div>
             <Link

@@ -55,15 +55,15 @@ export function TeamShowcase() {
             <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
               <Users className="h-3.5 w-3.5" /> Team Operations
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#071A1D]">
+            <h2 className="crm-section-title text-[#071A1D]">
               A unified workspace for your entire sales force.
             </h2>
-            <p className="mt-2 text-sm text-[#4A6B6F] max-w-xl font-normal">
+            <p className="crm-body mt-2 text-[#4A6B6F] max-w-xl">
               Shared deal ownership, chronological audit trails, and automatic activity attribution.
             </p>
           </div>
 
-          <Badge variant="outline" className="text-xs font-medium text-[#0D7F84] border-teal-200 bg-teal-50">
+          <Badge variant="outline" className="text-xs font-semibold text-[#0D7F84] border-teal-200 bg-teal-50">
             Multi-Tenant RBAC Active
           </Badge>
         </div>
@@ -73,7 +73,7 @@ export function TeamShowcase() {
           {/* Main Feed Card (2 columns) */}
           <div className="lg:col-span-2 rounded-2xl border border-[#E1EBEB] bg-white p-5 sm:p-6 shadow-sm">
             <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
-              <span className="text-xs font-semibold text-[#071A1D]">Real-Time Team Activity Stream</span>
+              <span className="crm-card-title text-[#071A1D]">Real-Time Team Activity Stream</span>
               <span className="text-[11px] text-[#0D7F84] font-mono flex items-center gap-1 font-semibold">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                 Live Sync
@@ -115,8 +115,8 @@ export function TeamShowcase() {
           {/* Right Column: Rep Performance & Ownership Strip */}
           <div className="rounded-2xl border border-[#E1EBEB] bg-white p-5 sm:p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <span className="text-xs font-semibold text-[#071A1D]">Top Sales Performers</span>
-              <p className="text-[11px] text-[#4A6B6F] mt-0.5">Quota attainment this quarter</p>
+              <span className="crm-card-title text-[#071A1D]">Top Sales Performers</span>
+              <p className="crm-caption text-[#4A6B6F] mt-0.5">Quota attainment this quarter</p>
 
               <div className="mt-4 space-y-3">
                 {teamReps.map((rep) => (
@@ -130,10 +130,10 @@ export function TeamShowcase() {
                       </div>
                       <div>
                         <div className="text-xs font-semibold text-[#071A1D]">{rep.name}</div>
-                        <div className="text-[10px] text-[#4A6B6F]">{rep.deals}</div>
+                        <div className="text-[10px] text-[#4A6B6F] font-mono">{rep.deals}</div>
                       </div>
                     </div>
-                    <Badge variant="outline" className="text-[10px] font-semibold text-[#0D7F84] border-teal-200 bg-teal-50">
+                    <Badge variant="outline" className="text-[10px] font-semibold font-mono text-[#0D7F84] border-teal-200 bg-teal-50">
                       {rep.rate}
                     </Badge>
                   </div>

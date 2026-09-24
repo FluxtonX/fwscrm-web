@@ -87,10 +87,10 @@ export function LeadManagementPreview() {
             <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
               <UserCheck className="h-3.5 w-3.5" /> Lead Management
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#071A1D]">
+            <h2 className="crm-section-title text-[#071A1D]">
               Authoritative customer records.
             </h2>
-            <p className="mt-2 text-sm text-[#4A6B6F] max-w-xl font-normal">
+            <p className="crm-body mt-2 text-[#4A6B6F] max-w-xl">
               Unified contact history, deal valuations, territory tags, and chronological touchpoint tracking.
             </p>
           </div>
@@ -134,13 +134,13 @@ export function LeadManagementPreview() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse min-w-[760px]">
               <thead>
-                <tr className="border-b border-[#E1EBEB] text-[#4A6B6F] font-semibold text-[11px] select-none">
-                  <th className="pb-3 pl-2">Lead Name</th>
-                  <th className="pb-3">Company</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3">Owner</th>
-                  <th className="pb-3">Deal Value</th>
-                  <th className="pb-3 pr-2">Last Activity</th>
+                <tr className="border-b border-[#E1EBEB] text-[#4A6B6F] select-none">
+                  <th className="crm-label pb-3 pl-2">Lead Name</th>
+                  <th className="crm-label pb-3">Company</th>
+                  <th className="crm-label pb-3">Status</th>
+                  <th className="crm-label pb-3">Owner</th>
+                  <th className="crm-label pb-3">Deal Value</th>
+                  <th className="crm-label pb-3 pr-2">Last Activity</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#EAEFF0]">

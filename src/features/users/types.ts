@@ -6,6 +6,8 @@ export type UserRole =
   | 'AGENT'
   | 'VIEWER';
 
+export type AccessType = 'PERMANENT' | 'TEMPORARY';
+
 export interface UserItem {
   id: string;
   organizationId: string;
@@ -14,8 +16,14 @@ export interface UserItem {
   lastName: string;
   role: UserRole;
   isActive: boolean;
+  accessType?: AccessType | null;
+  allowedIp?: string | null;
+  accessExpiresAt?: string | null;
   createdAt: string;
   updatedAt: string;
+  _count?: {
+    ownedLeads?: number;
+  };
 }
 
 export interface CreateMemberInput {
@@ -25,6 +33,7 @@ export interface CreateMemberInput {
   role: 'MANAGER' | 'OPERATOR';
   firstName?: string;
   lastName?: string;
+  accessType?: AccessType;
+  allowedIp?: string;
+  accessExpiresAt?: string;
 }
-
-

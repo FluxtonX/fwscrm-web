@@ -50,10 +50,10 @@ export function FAQSection() {
           <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
             <HelpCircle className="h-3.5 w-3.5" /> FAQ
           </div>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#071A1D]">
+          <h2 className="crm-section-title text-[#071A1D]">
             Frequently Asked Questions
           </h2>
-          <p className="mt-2 text-sm text-[#4A6B6F] font-normal">
+          <p className="crm-body mt-2 text-[#4A6B6F]">
             Everything you need to know about the platform, data security, and setup.
           </p>
         </div>
