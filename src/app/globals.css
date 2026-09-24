@@ -12,12 +12,50 @@ body {
   color: #071A1D;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Headings typography standard: semibold 600/700, tighter letter spacing, balanced line-height */
 h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+@layer utilities {
+  /* Centralized Typography Scale Tokens (Ui polishing.md Section 8 & 13) */
+  /* Pure typography structural properties - color is left contextual to avoid dark-theme collisions */
+  .crm-display {
+    @apply text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.1];
+  }
+
+  .crm-page-title {
+    @apply text-xl sm:text-2xl font-bold tracking-tight leading-tight;
+  }
+
+  .crm-section-title {
+    @apply text-base sm:text-lg font-semibold tracking-snug leading-snug;
+  }
+
+  .crm-card-title {
+    @apply text-xs sm:text-sm font-semibold tracking-normal leading-normal;
+  }
+
+  .crm-metric {
+    @apply text-2xl sm:text-3xl font-bold tracking-tight font-mono;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .crm-label {
+    @apply text-[11px] font-semibold uppercase tracking-wider;
+  }
+
+  .crm-body {
+    @apply text-xs sm:text-sm font-normal leading-relaxed;
+  }
+
+  .crm-caption {
+    @apply text-[11px] font-normal leading-normal;
+  }
 }
 
 /* Independent Sidebar Scrollbar with Deep Cyan Theme */

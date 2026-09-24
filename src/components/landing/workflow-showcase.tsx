@@ -64,10 +64,10 @@ export function WorkflowShowcase() {
           <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#16C1C8] uppercase tracking-wider mb-2">
             <Zap className="h-3.5 w-3.5" /> Smart Automation
           </div>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#F1FAFA]">
+          <h2 className="crm-section-title text-[#F1FAFA]">
             Automated lead progression.
           </h2>
-          <p className="mt-2 text-sm text-[#91B7BA] font-normal">
+          <p className="crm-body mt-2 text-[#91B7BA]">
             Eliminate manual handoffs with event-driven pipeline stages that guide leads from capture to close.
           </p>
         </div>
@@ -98,8 +98,8 @@ export function WorkflowShowcase() {
                   </div>
 
                   {/* Title & Desc */}
-                  <h3 className="text-xs font-semibold text-white leading-snug">{item.title}</h3>
-                  <p className="text-[11px] text-[#91B7BA] mt-1.5 leading-relaxed font-normal">
+                  <h3 className="crm-card-title text-white font-semibold">{item.title}</h3>
+                  <p className="crm-caption text-slate-300 mt-1.5 leading-relaxed">
                     {item.desc}
                   </p>
                 </div>

@@ -85,17 +85,17 @@ export function PipelineShowcase() {
             <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#16C1C8] uppercase tracking-wider mb-2">
               <TrendingUp className="h-3.5 w-3.5" /> Visual Sales Pipeline
             </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#F1FAFA]">
+            <h2 className="crm-section-title text-[#F1FAFA]">
               Move opportunities from contact to revenue.
             </h2>
-            <p className="mt-2 text-sm text-[#91B7BA] max-w-xl font-normal">
+            <p className="crm-body mt-2 text-[#91B7BA] max-w-xl">
               Stage gates, velocity metrics, and clear deal ownership keep your pipeline flowing without stalls.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             <span className="text-xs text-[#91B7BA]">Total Pipeline:</span>
-            <span className="text-sm font-semibold text-[#22D3DA] bg-[#0A2428] border border-[#16454B] px-3 py-1 rounded-lg">
+            <span className="text-sm font-semibold font-mono text-[#22D3DA] bg-[#0A2428] border border-[#16454B] px-3 py-1 rounded-lg">
               65 Deals • $327,500
             </span>
           </div>
@@ -123,14 +123,14 @@ export function PipelineShowcase() {
                 >
                   {/* Column Header */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-white">{col.name}</span>
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border ${col.badgeColor}`}>
+                    <span className="crm-card-title text-white">{col.name}</span>
+                    <span className={`text-[10px] font-semibold font-mono px-2 py-0.5 rounded border ${col.badgeColor}`}>
                       {col.leadsCount}
                     </span>
                   </div>
 
                   {/* Stage Value Metric */}
-                  <div className="text-[11px] font-mono text-[#91B7BA] mb-3 pb-2 border-b border-[#16454B]">
+                  <div className="crm-label font-mono text-[#91B7BA] mb-3 pb-2 border-b border-[#16454B]">
                     {col.totalValue}
                   </div>
 
@@ -152,10 +152,10 @@ export function PipelineShowcase() {
                         <div className="mt-3 flex items-center justify-between border-t border-[#16454B]/80 pt-2 text-[11px]">
                           <span className="font-semibold text-[#16C1C8]">{deal.value}</span>
                           <div className="flex items-center gap-1.5">
-                            <span className="h-5 w-5 rounded-full bg-[#0D2D32] border border-[#16454B] flex items-center justify-center text-[9px] font-bold text-slate-300">
+                            <span className="h-5 w-5 rounded-full bg-[#0D2D32] border border-[#16454B] flex items-center justify-center text-[9px] font-bold text-slate-100">
                               {deal.repInitials}
                             </span>
-                            <span className="text-[10px] text-slate-400 font-mono flex items-center gap-0.5">
+                            <span className="text-[10px] text-[#91B7BA] font-mono font-medium flex items-center gap-0.5">
                               <Clock className="h-2.5 w-2.5" /> {deal.days}d
                             </span>
                           </div>

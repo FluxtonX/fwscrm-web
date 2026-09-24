@@ -34,4 +34,36 @@ export async function updateUserStatus(
   });
 }
 
+export async function deleteUser(
+  userId: string,
+): Promise<{ success: boolean; message: string }> {
+  return apiClient<{ success: boolean; message: string }>(`/users/${userId}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function updateUserIp(
+  userId: string,
+  input: {
+    allowedIp?: string | null;
+    accessType?: 'PERMANENT' | 'TEMPORARY' | null;
+    accessExpiresAt?: string | null;
+  },
+): Promise<UserItem> {
+  return apiClient<UserItem>(`/users/${userId}/ip`, {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export async function adminResetPassword(
+  userId: string,
+  password: string,
+): Promise<{ success: boolean; message: string }> {
+  return apiClient<{ success: boolean; message: string }>(`/users/${userId}/password`, {
+    method: 'PATCH',
+    body: JSON.stringify({ password }),
+  });
+}
+
 

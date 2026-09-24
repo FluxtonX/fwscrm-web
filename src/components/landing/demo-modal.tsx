@@ -33,7 +33,7 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
     <Dialog open={open} onOpenChange={handleClose}>
       <div className="space-y-4">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-crm-header flex items-center gap-2">
+          <DialogTitle className="crm-card-title text-xl font-bold text-[#071A1D] flex items-center gap-2">
             <Calendar className="h-5 w-5 text-crm-teal" />
             Schedule a Live Platform Demo
           </DialogTitle>
@@ -44,7 +44,7 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal-50 text-crm-teal">
               <CheckCircle2 className="h-7 w-7" />
             </div>
-            <h3 className="text-lg font-semibold text-crm-header">Demo Request Received</h3>
+            <h3 className="crm-card-title text-lg font-bold text-[#071A1D]">Demo Request Received</h3>
             <p className="text-sm text-crm-muted max-w-xs mx-auto">
               Thank you, <span className="font-semibold text-slate-800">{fullName}</span>. An enterprise solution architect will reach out to <span className="font-semibold text-slate-800">{workEmail}</span> shortly.
             </p>
@@ -56,11 +56,11 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 py-2">
-            <p className="text-xs text-crm-muted">
+            <p className="crm-caption text-crm-muted">
               See how FWS CRM orchestrates high-volume lead ingestion, streaming CSV processing, and pipeline tracking.
             </p>
             <div>
-              <label className="block text-xs font-semibold text-crm-text mb-1">Full Name</label>
+              <label className="crm-label block mb-1 text-[#071A1D]">Full Name</label>
               <div className="relative">
                 <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                 <Input
@@ -74,7 +74,7 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-crm-text mb-1">Work Email</label>
+              <label className="crm-label block mb-1 text-[#071A1D]">Work Email</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                 <Input
@@ -90,7 +90,7 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-crm-text mb-1">Company</label>
+                <label className="crm-label block mb-1 text-[#071A1D]">Company</label>
                 <div className="relative">
                   <Building className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                   <Input
@@ -103,7 +103,7 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-crm-text mb-1">Team Size</label>
+                <label className="crm-label block mb-1 text-[#071A1D]">Team Size</label>
                 <select
                   value={teamSize}
                   onChange={(e) => setTeamSize(e.target.value)}

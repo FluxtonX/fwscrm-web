@@ -34,7 +34,7 @@ export function SecuritySection() {
           <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0D7F84] uppercase tracking-wider mb-2">
             <Shield className="h-3.5 w-3.5" /> Enterprise Trust
           </div>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#071A1D]">
+          <h2 className="crm-section-title text-[#071A1D]">
             Built with uncompromising security.
           </h2>
         </div>
@@ -55,8 +55,8 @@ export function SecuritySection() {
                     </div>
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
                   </div>
-                  <h3 className="text-sm font-semibold text-[#071A1D]">{pillar.title}</h3>
-                  <p className="mt-1 text-xs text-[#4A6B6F] leading-relaxed font-normal">
+                  <h3 className="crm-card-title text-[#071A1D]">{pillar.title}</h3>
+                  <p className="crm-caption text-[#4A6B6F] mt-1">
                     {pillar.subtitle}
                   </p>
                 </div>
