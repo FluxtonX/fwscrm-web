@@ -25,6 +25,8 @@ import {
   Flame,
   Award,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Eye,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -49,6 +51,7 @@ export default function DashboardPage() {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
   const [hoveredTrendIndex, setHoveredTrendIndex] = React.useState<number | null>(null);
+  const [showAllStages, setShowAllStages] = React.useState(false);
 
   // Dynamic greeting based on current hour
   const greeting = React.useMemo(() => {
@@ -101,6 +104,7 @@ export default function DashboardPage() {
 
   const overview = dashboard?.overview;
   const pipeline = dashboard?.pipeline ?? [];
+  const visiblePipeline = showAllStages ? pipeline : pipeline.slice(0, 6);
   const sourceAttribution = dashboard?.sources ?? [];
   const trends = dashboard?.trends ?? [];
   const team = dashboard?.teamPerformance ?? [];
@@ -569,7 +573,7 @@ export default function DashboardPage() {
       )}
 
       {/* 5. Time-Series Lead Trend Visualizer & Pipeline Funnel */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Time-Series Lead Acquisition Velocity (Takes 2 columns) */}
         <div className="lg:col-span-2 rounded-xl border border-crm-border bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-crm-border">
@@ -804,35 +808,57 @@ export default function DashboardPage() {
                 No active stages recorded.
               </div>
             ) : (
-              <div className="space-y-3.5">
-                {pipeline.map((item, idx) => (
-                  <div
-                    key={item.statusId || idx}
-                    className="group rounded-lg p-1.5 -mx-1.5 transition-all hover:bg-teal-50/60 cursor-pointer"
-                  >
-                    <div className="flex justify-between text-xs mb-1.5">
-                      <span className="font-semibold text-crm-header group-hover:text-crm-teal flex items-center gap-1.5 transition-colors">
-                        <span
-                          className="h-2 w-2 rounded-full ring-2 ring-transparent group-hover:ring-[#16C1C8]/40 transition-all"
-                          style={{ backgroundColor: item.color || '#0D9488' }}
+              <div>
+                <div className={`space-y-3.5 ${showAllStages && pipeline.length > 6 ? 'max-h-[380px] overflow-y-auto pr-1' : ''}`}>
+                  {visiblePipeline.map((item, idx) => (
+                    <div
+                      key={item.statusId || idx}
+                      className="group rounded-lg p-1.5 -mx-1.5 transition-all hover:bg-teal-50/60 cursor-pointer"
+                    >
+                      <div className="flex justify-between text-xs mb-1.5">
+                        <span className="font-semibold text-crm-header group-hover:text-crm-teal flex items-center gap-1.5 transition-colors">
+                          <span
+                            className="h-2 w-2 rounded-full ring-2 ring-transparent group-hover:ring-[#16C1C8]/40 transition-all"
+                            style={{ backgroundColor: item.color || '#0D9488' }}
+                          />
+                          {item.name}
+                        </span>
+                        <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors">
+                          <span className="text-crm-header font-bold">{item.count}</span> leads ({item.percentage}%)
+                        </span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-300 group-hover:brightness-110 group-hover:shadow-[0_0_8px_rgba(22,193,200,0.6)]"
+                          style={{
+                            width: `${Math.max(item.percentage, 2)}%`,
+                            backgroundColor: item.color || '#0D9488',
+                          }}
                         />
-                        {item.name}
-                      </span>
-                      <span className="font-mono text-crm-muted group-hover:text-crm-header font-medium transition-colors">
-                        <span className="text-crm-header font-bold">{item.count}</span> leads ({item.percentage}%)
-                      </span>
+                      </div>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-300 group-hover:brightness-110 group-hover:shadow-[0_0_8px_rgba(22,193,200,0.6)]"
-                        style={{
-                          width: `${Math.max(item.percentage, 2)}%`,
-                          backgroundColor: item.color || '#0D9488',
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+
+                {pipeline.length > 6 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllStages((prev) => !prev)}
+                    className="mt-3.5 w-full py-1.5 px-3 rounded-lg border border-slate-200 bg-slate-50 hover:bg-teal-50/60 hover:border-teal-200 text-xs font-medium text-slate-600 hover:text-crm-teal flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    {showAllStages ? (
+                      <>
+                        <span>Show less</span>
+                        <ChevronUp className="h-3.5 w-3.5" />
+                      </>
+                    ) : (
+                      <>
+                        <span>Show more ({pipeline.length - 6} more stages)</span>
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             )}
           </div>
