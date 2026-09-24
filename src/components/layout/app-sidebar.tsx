@@ -37,11 +37,12 @@ const navigationItems = [
     href: '/dashboard/activities',
     icon: Activity,
   },
-  {
-    label: 'Analytics',
-    href: '/dashboard/analytics',
-    icon: BarChart3,
-  },
+  // Temporarily commented out per client request:
+  // {
+  //   label: 'Analytics',
+  //   href: '/dashboard/analytics',
+  //   icon: BarChart3,
+  // },
   {
     label: 'Team & Users',
     href: '/dashboard/users',
