@@ -1748,7 +1748,7 @@ export default function UsersPage() {
             <ul className="list-disc list-inside text-[11px] text-amber-800 space-y-0.5 ml-1">
               <li>All customer leads assigned to this user will remain safe and become <strong>unassigned</strong>.</li>
               <li>Historical audit logs and import records will be <strong>preserved</strong>.</li>
-              <li>The member's login credentials and account will be <strong>permanently deleted</strong>.</li>
+              <li>The member&apos;s login credentials and account will be <strong>permanently deleted</strong>.</li>
             </ul>
           </div>
 
@@ -2220,7 +2220,7 @@ export default function UsersPage() {
                     <div>
                       <p className="font-semibold">Super Admin Password Override</p>
                       <p className="text-[11px] text-blue-700 mt-0.5 leading-relaxed">
-                        This action directly resets the user's password with secure bcrypt encryption without requiring their current password. The user can log in immediately with the new credentials.
+                        This action directly resets the user&apos;s password with secure bcrypt encryption without requiring their current password. The user can log in immediately with the new credentials.
                       </p>
                     </div>
                   </div>
