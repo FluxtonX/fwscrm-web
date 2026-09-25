@@ -13,12 +13,14 @@ import {
   bulkAssignLeads,
   bulkDeleteLeads,
   bulkTagLeads,
+  bulkEditLeads,
+  BulkEditPayload,
   fetchUsers,
   UserItem,
 } from '../api';
 import { LeadStatus } from '../types';
 import { useToast } from '@/components/ui/toast';
-import { AlertTriangle, Tag } from 'lucide-react';
+import { AlertTriangle, Tag, SlidersHorizontal, Activity, UserCheck } from 'lucide-react';
 
 interface BulkStatusModalProps {
   open: boolean;
@@ -330,6 +332,264 @@ export function BulkTagModal({
         <Button onClick={handleApply} isLoading={loading} disabled={!tag.trim()}>
           Apply Tags
         </Button>
+      </DialogFooter>
+    </Dialog>
+  );
+}
+
+export interface BulkEditModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  selectedIds: string[];
+  statuses: LeadStatus[];
+  onSuccess: (keepSelection?: boolean) => void;
+}
+
+export function BulkEditModal({
+  open,
+  onOpenChange,
+  selectedIds,
+  statuses,
+  onSuccess,
+}: BulkEditModalProps) {
+  const [statusId, setStatusId] = React.useState('');
+  const [ownerId, setOwnerId] = React.useState('');
+  const [tag, setTag] = React.useState('');
+  const [tagAction, setTagAction] = React.useState<'ADD' | 'REMOVE' | 'SET'>('ADD');
+  const [keepSelection, setKeepSelection] = React.useState(true);
+  const [users, setUsers] = React.useState<UserItem[]>([]);
+  const [loadingUsers, setLoadingUsers] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const toast = useToast();
+
+  React.useEffect(() => {
+    if (open) {
+      setLoadingUsers(true);
+      fetchUsers()
+        .then((res) => setUsers(res))
+        .catch((err) => toast.error(err?.message || 'Failed to load team members'))
+        .finally(() => setLoadingUsers(false));
+    } else {
+      setStatusId('');
+      setOwnerId('');
+      setTag('');
+      setTagAction('ADD');
+    }
+  }, [open, toast]);
+
+  const hasStatusChange = Boolean(statusId);
+  const hasOwnerChange = Boolean(ownerId);
+  const hasTagChange = Boolean(tag.trim());
+  const hasAnyChange = hasStatusChange || hasOwnerChange || hasTagChange;
+
+  const handleApply = async () => {
+    if (!hasAnyChange) return;
+    setLoading(true);
+    try {
+      const payload: BulkEditPayload = {
+        leadIds: selectedIds,
+        ...(hasStatusChange ? { statusId } : {}),
+        ...(hasOwnerChange ? { ownerId } : {}),
+        ...(hasTagChange ? { tag: tag.trim(), tagAction } : {}),
+      };
+
+      const res = await bulkEditLeads(payload);
+      const changesCount = [hasStatusChange, hasOwnerChange, hasTagChange].filter(Boolean).length;
+      toast.success(
+        `Updated ${changesCount} attribute${changesCount > 1 ? 's' : ''} across ${res.count} leads`,
+      );
+      onOpenChange(false);
+      onSuccess(keepSelection);
+    } catch (err: any) {
+      toast.error(err?.message || 'Failed to apply bulk edit');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogHeader onClose={() => onOpenChange(false)}>
+        <DialogTitle className="flex items-center gap-2 text-crm-text text-base">
+          <SlidersHorizontal className="h-4 w-4 text-[#16C1C8]" />
+          <span>Bulk Edit Leads</span>
+        </DialogTitle>
+      </DialogHeader>
+
+      <div className="space-y-4 my-2 text-xs">
+        {/* Minimalist selection counter */}
+        <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-slate-50 border border-crm-border text-crm-muted">
+          <span>Editing multiple attributes simultaneously</span>
+          <span className="font-semibold text-crm-text">
+            <span className="text-[#16C1C8]">{selectedIds.length}</span> leads selected
+          </span>
+        </div>
+
+        {/* 1. Status Field */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-crm-text flex items-center gap-1.5">
+              <Activity className="h-3.5 w-3.5 text-crm-muted" />
+              Pipeline Status
+            </label>
+            {hasStatusChange && (
+              <span className="text-[10px] font-semibold text-crm-teal bg-crm-teal/10 px-1.5 py-0.5 rounded">
+                Will update
+              </span>
+            )}
+          </div>
+          <select
+            value={statusId}
+            onChange={(e) => setStatusId(e.target.value)}
+            className="flex h-9 w-full rounded-md border border-crm-border bg-white px-3 py-1.5 text-xs text-crm-text shadow-sm focus:outline-none focus:ring-2 focus:ring-crm-primary"
+          >
+            <option value="">— Keep current status (No change) —</option>
+            {statuses.map((st) => (
+              <option key={st.id} value={st.id}>
+                {st.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 2. Assign Owner Field */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-crm-text flex items-center gap-1.5">
+              <UserCheck className="h-3.5 w-3.5 text-crm-muted" />
+              Assign Owner
+            </label>
+            {hasOwnerChange && (
+              <span className="text-[10px] font-semibold text-crm-teal bg-crm-teal/10 px-1.5 py-0.5 rounded">
+                Will update
+              </span>
+            )}
+          </div>
+          {loadingUsers ? (
+            <div className="h-9 flex items-center px-3 text-xs text-crm-muted bg-slate-50 rounded-md border border-crm-border">
+              Loading team members...
+            </div>
+          ) : (
+            <select
+              value={ownerId}
+              onChange={(e) => setOwnerId(e.target.value)}
+              className="flex h-9 w-full rounded-md border border-crm-border bg-white px-3 py-1.5 text-xs text-crm-text shadow-sm focus:outline-none focus:ring-2 focus:ring-crm-primary"
+            >
+              <option value="">— Keep current owner (No change) —</option>
+              <option value="unassigned">Unassigned (Remove owner)</option>
+              {users.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.firstName} {u.lastName} ({u.role}){u._count?.ownedLeads !== undefined ? ` • ${u._count.ownedLeads} leads` : ''}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        {/* 3. Tag Field */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-crm-text flex items-center gap-1.5">
+              <Tag className="h-3.5 w-3.5 text-crm-muted" />
+              Tags
+            </label>
+            {hasTagChange && (
+              <span className="text-[10px] font-semibold text-crm-teal bg-crm-teal/10 px-1.5 py-0.5 rounded">
+                {tagAction === 'ADD' ? '+ Add tag' : tagAction === 'REMOVE' ? '- Remove tag' : 'Replace tag'}
+              </span>
+            )}
+          </div>
+          <div className="space-y-2">
+            <input
+              type="text"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+              placeholder="Enter tag (leave empty for no change)..."
+              className="flex h-9 w-full rounded-md border border-crm-border bg-white px-3 py-1.5 text-xs text-crm-text shadow-sm focus:outline-none focus:ring-2 focus:ring-crm-primary"
+            />
+            {hasTagChange && (
+              <div className="grid grid-cols-3 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setTagAction('ADD')}
+                  className={`px-2 py-1.5 text-xs rounded border font-medium transition-colors ${
+                    tagAction === 'ADD'
+                      ? 'bg-crm-teal/10 border-crm-teal text-crm-teal font-semibold'
+                      : 'border-crm-border text-crm-muted hover:bg-slate-50'
+                  }`}
+                >
+                  + Add Tag
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTagAction('REMOVE')}
+                  className={`px-2 py-1.5 text-xs rounded border font-medium transition-colors ${
+                    tagAction === 'REMOVE'
+                      ? 'bg-rose-50 border-rose-300 text-rose-700 font-semibold'
+                      : 'border-crm-border text-crm-muted hover:bg-slate-50'
+                  }`}
+                >
+                  - Remove Tag
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTagAction('SET')}
+                  className={`px-2 py-1.5 text-xs rounded border font-medium transition-colors ${
+                    tagAction === 'SET'
+                      ? 'bg-amber-50 border-amber-300 text-amber-700 font-semibold'
+                      : 'border-crm-border text-crm-muted hover:bg-slate-50'
+                  }`}
+                >
+                  Replace All
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Change Preview Summary Pill */}
+        <div className="flex items-center justify-between text-xs px-3 py-2 rounded-lg bg-[#F0F6F6] border border-[#16C1C8]/20">
+          <span className="text-slate-600">
+            {hasAnyChange
+              ? `Action: ${[
+                  hasStatusChange && 'Update Status',
+                  hasOwnerChange && 'Assign Owner',
+                  hasTagChange && 'Update Tags',
+                ]
+                  .filter(Boolean)
+                  .join(' + ')}`
+              : 'Select at least one attribute to update'}
+          </span>
+          {hasAnyChange && (
+            <span className="font-semibold text-crm-teal">Ready to apply</span>
+          )}
+        </div>
+      </div>
+
+      <DialogFooter className="flex items-center justify-between sm:justify-between w-full pt-2">
+        <label className="flex items-center gap-1.5 cursor-pointer select-none text-xs text-crm-muted hover:text-crm-text">
+          <input
+            type="checkbox"
+            checked={keepSelection}
+            onChange={(e) => setKeepSelection(e.target.checked)}
+            className="rounded border-crm-border text-crm-teal focus:ring-crm-teal h-3.5 w-3.5 accent-[#16C1C8]"
+          />
+          <span>Keep selected</span>
+        </label>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button
+            size="sm"
+            onClick={handleApply}
+            isLoading={loading}
+            disabled={!hasAnyChange}
+            className="bg-[#16C1C8] hover:bg-[#16C1C8]/90 text-[#071A1D] font-semibold"
+          >
+            Apply to {selectedIds.length} Leads
+          </Button>
+        </div>
       </DialogFooter>
     </Dialog>
   );

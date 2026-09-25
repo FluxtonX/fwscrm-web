@@ -34,7 +34,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/features/auth/auth-context';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import {
   fetchLeads,
   fetchLeadStatuses,
@@ -60,7 +60,9 @@ import {
   BulkDeleteDialog,
   BulkAssignModal,
   BulkTagModal,
+  BulkEditModal,
 } from './bulk-modals';
+import { CountryFlag } from './country-flag';
 
 export function LeadsTable() {
   const { user } = useAuth();
@@ -101,6 +103,7 @@ export function LeadsTable() {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [editLead, setEditLead] = React.useState<Lead | null>(null);
   const [detailLead, setDetailLead] = React.useState<Lead | null>(null);
+  const [bulkEditOpen, setBulkEditOpen] = React.useState(false);
   const [bulkStatusOpen, setBulkStatusOpen] = React.useState(false);
   const [bulkAssignOpen, setBulkAssignOpen] = React.useState(false);
   const [bulkTagOpen, setBulkTagOpen] = React.useState(false);
@@ -115,26 +118,108 @@ export function LeadsTable() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // TanStack Queries
-  const { data: leadsData, isLoading: loading } = useQuery<PaginatedLeadsResponse>({
-    queryKey: ['leads', { page, limit, search: debouncedSearch, preset: presetTab, status: statusFilter, country: countryFilter, source: sourceFilter, sortField, sortOrder }],
-    queryFn: () => fetchLeads({ page, limit, search: debouncedSearch, preset: presetTab, status: statusFilter, country: countryFilter, leadSource: sourceFilter, sort: sortField, order: sortOrder }),
+  // TanStack Queries with High-Performance Caching & Zero-Flicker Transitions
+  const {
+    data: leadsData,
+    isLoading: isInitialLoading,
+    isFetching,
+    isPlaceholderData,
+  } = useQuery<PaginatedLeadsResponse>({
+    queryKey: [
+      'leads',
+      {
+        page,
+        limit,
+        search: debouncedSearch,
+        preset: presetTab,
+        status: statusFilter,
+        country: countryFilter,
+        source: sourceFilter,
+        sortField,
+        sortOrder,
+      },
+    ],
+    queryFn: () =>
+      fetchLeads({
+        page,
+        limit,
+        search: debouncedSearch,
+        preset: presetTab,
+        status: statusFilter,
+        country: countryFilter,
+        leadSource: sourceFilter,
+        sort: sortField,
+        order: sortOrder,
+      }),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000, // 30 seconds fresh cache
   });
 
+  // Reference lookups cached for 5-10 minutes to avoid redundant HTTP requests
   const { data: statuses = [] } = useQuery<LeadStatus[]>({
     queryKey: ['lead-statuses'],
     queryFn: fetchLeadStatuses,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: sources = [] } = useQuery<LeadSource[]>({
     queryKey: ['lead-sources'],
     queryFn: fetchLeadSources,
+    staleTime: 5 * 60 * 1000,
   });
 
   const { data: countries = [] } = useQuery<Country[]>({
     queryKey: ['countries'],
     queryFn: fetchCountries,
+    staleTime: 10 * 60 * 1000,
   });
+
+  // Intelligent Background Prefetching: Prefetch next page so clicking 'Next' is instantaneous (0ms)
+  React.useEffect(() => {
+    if (leadsData?.meta && page < leadsData.meta.totalPages) {
+      queryClient.prefetchQuery({
+        queryKey: [
+          'leads',
+          {
+            page: page + 1,
+            limit,
+            search: debouncedSearch,
+            preset: presetTab,
+            status: statusFilter,
+            country: countryFilter,
+            source: sourceFilter,
+            sortField,
+            sortOrder,
+          },
+        ],
+        queryFn: () =>
+          fetchLeads({
+            page: page + 1,
+            limit,
+            search: debouncedSearch,
+            preset: presetTab,
+            status: statusFilter,
+            country: countryFilter,
+            leadSource: sourceFilter,
+            sort: sortField,
+            order: sortOrder,
+          }),
+        staleTime: 30 * 1000,
+      });
+    }
+  }, [
+    leadsData,
+    page,
+    limit,
+    debouncedSearch,
+    presetTab,
+    statusFilter,
+    countryFilter,
+    sourceFilter,
+    sortField,
+    sortOrder,
+    queryClient,
+  ]);
 
   const loadLeads = React.useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ['leads'] });
@@ -430,6 +515,15 @@ export function LeadsTable() {
           <div className="flex items-center gap-2">
             <Button
               size="sm"
+              onClick={() => setBulkEditOpen(true)}
+              className="bg-[#16C1C8] hover:bg-[#16C1C8]/90 text-[#071A1D] font-semibold border-none shadow-sm flex items-center gap-1.5"
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5 text-[#071A1D]" />
+              Bulk Edit
+            </Button>
+            <div className="h-4 w-px bg-slate-700/60 mx-0.5 hidden sm:block" />
+            <Button
+              size="sm"
               variant="outline"
               onClick={() => setBulkStatusOpen(true)}
               className="bg-[#0D2D32] border-[#16C1C8]/30 text-white hover:bg-[#16C1C8]/20 hover:text-[#22D3DA]"
@@ -483,7 +577,11 @@ export function LeadsTable() {
       )}
 
       {/* Leads Table Container */}
-      <div className="overflow-hidden rounded-xl border border-crm-border bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-crm-border bg-white shadow-sm relative">
+        {/* Subtle background fetching indicator (smooth zero-flicker loading) */}
+        {isFetching && (
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-crm-teal/40 via-crm-teal to-crm-teal/40 animate-pulse z-10" />
+        )}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-crm-text border-collapse">
             {/* Table Header matching CRM visual design */}
@@ -604,8 +702,12 @@ export function LeadsTable() {
             </thead>
 
             {/* Table Body */}
-            <tbody className="divide-y divide-crm-border">
-              {loading ? (
+            <tbody
+              className={`divide-y divide-crm-border transition-opacity duration-150 ${
+                isFetching && isPlaceholderData ? 'opacity-60' : 'opacity-100'
+              }`}
+            >
+              {isInitialLoading && !leadsData ? (
                 <tr>
                   <td colSpan={12} className="py-12 text-center text-crm-muted">
                     <div className="flex flex-col items-center justify-center gap-2">
@@ -679,7 +781,7 @@ export function LeadsTable() {
                       {/* Country */}
                       {visibleColumns.country && (
                         <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap">
-                          {lead.countryName || '—'}
+                          <CountryFlag countryName={lead.countryName} isoCode={lead.country?.isoCode} />
                         </td>
                       )}
 
@@ -890,13 +992,25 @@ export function LeadsTable() {
         }}
       />
 
+      <BulkEditModal
+        open={bulkEditOpen}
+        onOpenChange={setBulkEditOpen}
+        selectedIds={selectedIds}
+        statuses={statuses}
+        onSuccess={(keepSelection) => {
+          if (!keepSelection) {
+            setSelectedIds([]);
+          }
+          loadLeads();
+        }}
+      />
+
       <BulkStatusModal
         open={bulkStatusOpen}
         onOpenChange={setBulkStatusOpen}
         selectedIds={selectedIds}
         statuses={statuses}
         onSuccess={() => {
-          setSelectedIds([]);
           loadLeads();
         }}
       />
@@ -906,7 +1020,6 @@ export function LeadsTable() {
         onOpenChange={setBulkAssignOpen}
         selectedIds={selectedIds}
         onSuccess={() => {
-          setSelectedIds([]);
           loadLeads();
         }}
       />
@@ -916,7 +1029,6 @@ export function LeadsTable() {
         onOpenChange={setBulkTagOpen}
         selectedIds={selectedIds}
         onSuccess={() => {
-          setSelectedIds([]);
           loadLeads();
         }}
       />
