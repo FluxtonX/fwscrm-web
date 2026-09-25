@@ -86,6 +86,23 @@ export async function bulkTagLeads(
   });
 }
 
+export interface BulkEditPayload {
+  leadIds: string[];
+  statusId?: string;
+  ownerId?: string;
+  tag?: string;
+  tagAction?: 'ADD' | 'REMOVE' | 'SET';
+}
+
+export async function bulkEditLeads(
+  payload: BulkEditPayload,
+): Promise<{ count: number; updatedFields: string[] }> {
+  return apiClient<{ count: number; updatedFields: string[] }>('/leads/bulk/edit', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function fetchLeadStatuses(): Promise<LeadStatus[]> {
   return apiClient<LeadStatus[]>('/leads/meta/statuses');
 }

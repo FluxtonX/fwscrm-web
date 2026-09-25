@@ -72,6 +72,7 @@ export interface Lead {
   phone?: string | null;
   countryId?: string | null;
   countryName?: string | null;
+  country?: Country | null;
   statusId?: string | null;
   status?: LeadStatus | null;
   sourceId?: string | null;
