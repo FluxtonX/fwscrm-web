@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -19,8 +20,19 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const router = useRouter();
   const { login } = useAuth();
   const [serverError, setServerError] = React.useState<string | null>(null);
+
+  // Silently prefetch dashboard chunks so entering the app after login is instant
+  React.useEffect(() => {
+    try {
+      router.prefetch('/dashboard');
+      router.prefetch('/dashboard/leads');
+    } catch {
+      // ignore
+    }
+  }, [router]);
 
   const {
     register,
