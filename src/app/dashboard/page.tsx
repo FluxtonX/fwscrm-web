@@ -40,6 +40,7 @@ import {
   downloadLeadsCsv,
 } from '@/features/leads/api';
 import { CreateLeadModal } from '@/features/leads/components/create-lead-modal';
+import { ExportLeadsModal } from '@/features/leads/components/export-leads-modal';
 
 export default function DashboardPage() {
   const { user, organization } = useAuth();
@@ -49,6 +50,7 @@ export default function DashboardPage() {
   // Timeframe state: today | 7d | 30d | month | all
   const [timeframe, setTimeframe] = React.useState('30d');
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
+  const [exportModalOpen, setExportModalOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
   const [hoveredTrendIndex, setHoveredTrendIndex] = React.useState<number | null>(null);
   const [showAllStages, setShowAllStages] = React.useState(false);
@@ -90,16 +92,8 @@ export default function DashboardPage() {
     queryFn: fetchCountries,
   });
 
-  const handleExportData = async () => {
-    setIsExporting(true);
-    try {
-      await downloadLeadsCsv();
-      toast.success('Leads export downloaded');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to export leads');
-    } finally {
-      setIsExporting(false);
-    }
+  const handleExportData = () => {
+    setExportModalOpen(true);
   };
 
   const overview = dashboard?.overview;
@@ -251,43 +245,6 @@ export default function DashboardPage() {
           <Button size="sm" variant="outline" onClick={() => refetch()}>
             Retry
           </Button>
-        </div>
-      )}
-
-      {/* 2. Executive Smart Insights Cards */}
-      {insights.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {insights.map((insight) => (
-            <div
-              key={insight.id}
-              className={`flex items-center gap-3 rounded-xl border p-3.5 text-xs shadow-sm transition-all ${
-                insight.type === 'positive'
-                  ? 'border-emerald-200 bg-emerald-50/70 text-emerald-900'
-                  : insight.type === 'warning'
-                    ? 'border-amber-200 bg-amber-50/70 text-amber-900'
-                    : 'border-sky-200 bg-sky-50/70 text-sky-900'
-              }`}
-            >
-              <div
-                className={`rounded-lg p-2 shrink-0 ${
-                  insight.type === 'positive'
-                    ? 'bg-emerald-100 text-emerald-700'
-                    : insight.type === 'warning'
-                      ? 'bg-amber-100 text-amber-700'
-                      : 'bg-sky-100 text-sky-700'
-                }`}
-              >
-                {insight.type === 'positive' ? (
-                  <TrendingUp className="h-4 w-4" />
-                ) : insight.type === 'warning' ? (
-                  <AlertTriangle className="h-4 w-4" />
-                ) : (
-                  <Sparkles className="h-4 w-4" />
-                )}
-              </div>
-              <span className="font-medium leading-relaxed">{insight.text}</span>
-            </div>
-          ))}
         </div>
       )}
 
@@ -1145,6 +1102,13 @@ export default function DashboardPage() {
         statuses={statuses}
         sources={sources}
         countries={countries}
+      />
+
+      {/* Advanced Export Modal */}
+      <ExportLeadsModal
+        open={exportModalOpen}
+        onOpenChange={setExportModalOpen}
+        sourceContext="dashboard"
       />
     </div>
   );

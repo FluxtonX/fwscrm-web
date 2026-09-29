@@ -63,6 +63,7 @@ import {
   BulkEditModal,
 } from './bulk-modals';
 import { CountryFlag } from './country-flag';
+import { ExportLeadsModal } from './export-leads-modal';
 
 export function LeadsTable() {
   const { user } = useAuth();
@@ -85,6 +86,7 @@ export function LeadsTable() {
 
   // UI & Selection state
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
+  const [exportModalOpen, setExportModalOpen] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
   const [showColumnMenu, setShowColumnMenu] = React.useState(false);
   const [visibleColumns, setVisibleColumns] = React.useState<Record<string, boolean>>({
@@ -226,6 +228,34 @@ export function LeadsTable() {
     queryClient.invalidateQueries({ queryKey: ['dashboard-payload'] });
   }, [queryClient]);
 
+  // Next / Prev Lead Navigation for Detail Panel (fast in-memory navigation)
+  const currentDetailIndex = React.useMemo(() => {
+    if (!detailLead || !leadsData?.data) return -1;
+    return leadsData.data.findIndex((l) => l.id === detailLead.id);
+  }, [detailLead, leadsData?.data]);
+
+  const hasPrevLead = currentDetailIndex > 0;
+  const hasNextLead =
+    currentDetailIndex !== -1 &&
+    !!leadsData?.data &&
+    currentDetailIndex < leadsData.data.length - 1;
+
+  const handlePrevLead = React.useCallback(() => {
+    if (leadsData?.data && currentDetailIndex > 0) {
+      setDetailLead(leadsData.data[currentDetailIndex - 1]);
+    }
+  }, [leadsData?.data, currentDetailIndex]);
+
+  const handleNextLead = React.useCallback(() => {
+    if (
+      leadsData?.data &&
+      currentDetailIndex !== -1 &&
+      currentDetailIndex < leadsData.data.length - 1
+    ) {
+      setDetailLead(leadsData.data[currentDetailIndex + 1]);
+    }
+  }, [leadsData?.data, currentDetailIndex]);
+
   // Handle Sort
   const handleSort = (field: string) => {
     if (sortField === field) {
@@ -280,36 +310,14 @@ export function LeadsTable() {
     }
   };
 
-  // Streaming Server CSV Export with active filters
-  const handleExport = async () => {
-    setIsExporting(true);
-    try {
-      await downloadLeadsCsv({
-        search: debouncedSearch || undefined,
-        status: statusFilter || undefined,
-        country: countryFilter || undefined,
-        leadSource: sourceFilter || undefined,
-      });
-      toast.success('Leads export downloaded successfully');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to export leads');
-    } finally {
-      setIsExporting(false);
-    }
+  // Open CSV Export modal with active filters / selection
+  const handleExport = () => {
+    setExportModalOpen(true);
   };
 
-  // Streaming Server CSV Export for selected leads
-  const handleExportSelected = async () => {
-    if (selectedIds.length === 0) return;
-    setIsExporting(true);
-    try {
-      await downloadSelectedLeadsCsv(selectedIds);
-      toast.success(`Exported ${selectedIds.length} selected leads`);
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to export selected leads');
-    } finally {
-      setIsExporting(false);
-    }
+  // Open CSV Export modal for selected leads
+  const handleExportSelected = () => {
+    setExportModalOpen(true);
   };
 
   const isAllSelected =
@@ -583,9 +591,9 @@ export function LeadsTable() {
           <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-crm-teal/40 via-crm-teal to-crm-teal/40 animate-pulse z-10" />
         )}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-crm-text border-collapse">
+          <table className="w-full text-left text-[13px] text-crm-text border-collapse">
             {/* Table Header matching CRM visual design */}
-            <thead className="bg-[#F0F6F6] text-slate-700 font-semibold border-b border-crm-border select-none">
+            <thead className="bg-[#F0F6F6] text-slate-700 font-semibold border-b border-crm-border select-none text-xs">
               <tr>
                 {/* Selection Checkbox */}
                 <th className="w-10 px-3 py-3 text-center">
@@ -738,15 +746,32 @@ export function LeadsTable() {
                   return (
                     <tr
                       key={lead.id}
-                      className={`hover:bg-crm-table-row-hover transition-colors ${
+                      onClick={(e) => {
+                        // Ignore clicks on buttons, links, inputs, or actions dropdowns
+                        const target = e.target as HTMLElement;
+                        if (target.closest('button, a, input, [role="menuitem"], .no-row-click')) {
+                          return;
+                        }
+                        // If the user has highlighted text (dragged mouse to select), do not toggle row selection
+                        const selection = window.getSelection();
+                        if (selection && selection.toString().trim().length > 0) {
+                          return;
+                        }
+                        handleSelectRow(lead.id);
+                      }}
+                      className={`cursor-pointer hover:bg-crm-table-row-hover transition-colors ${
                         isSelected ? 'bg-[#16C1C8]/10' : ''
                       }`}
                     >
                       {/* Checkbox */}
-                      <td className="w-10 px-3 py-2.5 text-center">
+                      <td
+                        className="w-10 px-3 py-2.5 text-center no-row-click"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <button
                           onClick={() => handleSelectRow(lead.id)}
-                          className="text-slate-400 hover:text-crm-teal"
+                          className="text-slate-400 hover:text-crm-teal p-0.5 rounded transition-colors"
+                          title={isSelected ? 'Deselect row' : 'Select row'}
                         >
                           {isSelected ? (
                             <CheckSquare className="h-4 w-4 text-crm-teal" />
@@ -757,37 +782,34 @@ export function LeadsTable() {
                       </td>
 
                       {/* Name */}
-                      <td className="px-4 py-2.5 font-semibold text-crm-header whitespace-nowrap">
-                        <button
-                          onClick={() => setDetailLead(lead)}
-                          className="hover:text-crm-teal transition-colors text-left"
-                        >
+                      <td className="px-4 py-2.5 font-semibold text-crm-header whitespace-nowrap select-text text-sm">
+                        <span className="select-text hover:text-crm-teal transition-colors">
                           {lead.firstName} {lead.lastName}
-                        </button>
+                        </span>
                       </td>
 
                       {/* Email */}
-                      <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap">
-                        {lead.email}
+                      <td className="px-4 py-2.5 text-slate-700 whitespace-nowrap select-text text-[13px]">
+                        <span className="select-text">{lead.email}</span>
                       </td>
 
                       {/* Phone */}
                       {visibleColumns.phone && (
-                        <td className="px-4 py-2.5 text-slate-500 whitespace-nowrap">
-                          {lead.phone || '—'}
+                        <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap select-text text-[13px]">
+                          <span className="select-text">{lead.phone || '—'}</span>
                         </td>
                       )}
 
                       {/* Country */}
                       {visibleColumns.country && (
-                        <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap">
+                        <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap select-text text-[13px]">
                           <CountryFlag countryName={lead.countryName} isoCode={lead.country?.isoCode} />
                         </td>
                       )}
 
                       {/* Status */}
                       {visibleColumns.status && (
-                        <td className="px-4 py-2.5 whitespace-nowrap">
+                        <td className="px-4 py-2.5 whitespace-nowrap select-text text-xs">
                           {lead.status ? (
                             <Badge
                               variant="default"
@@ -807,9 +829,9 @@ export function LeadsTable() {
 
                       {/* Lead Source */}
                       {visibleColumns.source && (
-                        <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap">
+                        <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap select-text text-xs">
                           {lead.sourceName ? (
-                            <span className="rounded bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700">
+                            <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
                               {lead.sourceName}
                             </span>
                           ) : (
@@ -820,16 +842,16 @@ export function LeadsTable() {
 
                       {/* Referrer */}
                       {visibleColumns.referrer && (
-                        <td className="px-4 py-2.5 text-slate-500 whitespace-nowrap">
-                          {lead.referrer || '—'}
+                        <td className="px-4 py-2.5 text-slate-500 whitespace-nowrap select-text text-[13px]">
+                          <span className="select-text">{lead.referrer || '—'}</span>
                         </td>
                       )}
 
                       {/* Tag 1 */}
                       {visibleColumns.tag1 && (
-                        <td className="px-4 py-2.5 text-slate-500 whitespace-nowrap">
+                        <td className="px-4 py-2.5 text-slate-500 whitespace-nowrap select-text text-xs">
                           {lead.tag1 ? (
-                            <span className="rounded bg-teal-50 text-crm-teal border border-teal-100 px-1.5 py-0.5 text-[10px]">
+                            <span className="rounded bg-teal-50 text-crm-teal border border-teal-100 px-2 py-0.5 text-[11px] font-medium">
                               {lead.tag1}
                             </span>
                           ) : (
@@ -840,9 +862,9 @@ export function LeadsTable() {
 
                       {/* Owner */}
                       {visibleColumns.owner && (
-                        <td className="px-4 py-2.5 text-slate-600 whitespace-nowrap">
+                        <td className="px-4 py-2.5 text-slate-700 whitespace-nowrap select-text text-[13px]">
                           {lead.owner ? (
-                            <span>
+                            <span className="select-text font-medium">
                               {lead.owner.firstName} {lead.owner.lastName}
                             </span>
                           ) : (
@@ -859,29 +881,41 @@ export function LeadsTable() {
                       )}
 
                       {/* Row Actions */}
-                      <td className="w-12 px-3 py-2.5 text-right whitespace-nowrap">
+                      <td
+                        className="w-12 px-3 py-2.5 text-right whitespace-nowrap no-row-click"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <div className="flex items-center justify-end gap-1">
                           <button
-                            onClick={() => setDetailLead(lead)}
-                            title="View Lead"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDetailLead(lead);
+                            }}
+                            title="View Lead Details"
                             className="p-1 rounded text-slate-400 hover:text-crm-teal hover:bg-slate-100 transition-colors"
                           >
-                            <Eye className="h-3.5 w-3.5" />
+                            <Eye className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => setEditLead(lead)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditLead(lead);
+                            }}
                             title="Edit Lead"
                             className="p-1 rounded text-slate-400 hover:text-sky-600 hover:bg-slate-100 transition-colors"
                           >
-                            <Edit2 className="h-3.5 w-3.5" />
+                            <Edit2 className="h-4 w-4" />
                           </button>
                           {canDelete && (
                             <button
-                              onClick={() => handleDeleteRow(lead.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteRow(lead.id);
+                              }}
                               title="Delete Lead"
                               className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-slate-100 transition-colors"
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <Trash2 className="h-4 w-4" />
                             </button>
                           )}
                         </div>
@@ -990,6 +1024,10 @@ export function LeadsTable() {
           setDetailLead(null);
           setEditLead(l);
         }}
+        onPrev={handlePrevLead}
+        onNext={handleNextLead}
+        hasPrev={hasPrevLead}
+        hasNext={hasNextLead}
       />
 
       <BulkEditModal
@@ -1041,6 +1079,19 @@ export function LeadsTable() {
           setSelectedIds([]);
           loadLeads();
         }}
+      />
+
+      <ExportLeadsModal
+        open={exportModalOpen}
+        onOpenChange={setExportModalOpen}
+        initialFilters={{
+          search: debouncedSearch || undefined,
+          status: statusFilter || undefined,
+          country: countryFilter || undefined,
+          leadSource: sourceFilter || undefined,
+        }}
+        selectedLeadIds={selectedIds}
+        sourceContext="table"
       />
     </div>
   );

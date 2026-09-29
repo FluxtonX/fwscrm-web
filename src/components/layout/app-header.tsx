@@ -30,15 +30,15 @@ export function AppHeader() {
         {user ? (
           <div className="flex items-center gap-3">
             <div className="hidden md:flex flex-col text-right">
-              <span className="text-xs font-semibold text-slate-200">
+              <span className="text-sm font-semibold text-slate-200">
                 {user.firstName} {user.lastName}
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">{user.email}</span>
+              <span className="text-xs text-slate-400 font-mono">{user.email}</span>
             </div>
 
             <Badge
               variant="default"
-              className="bg-[#0A2428] text-[#22D3DA] border-[#0D2D32] text-[10px] px-2 py-0.5 font-medium tracking-wide"
+              className="bg-[#0A2428] text-[#22D3DA] border-[#0D2D32] text-xs px-2.5 py-0.5 font-medium tracking-wide"
             >
               {user.role}
             </Badge>

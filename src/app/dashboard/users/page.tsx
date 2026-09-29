@@ -121,7 +121,7 @@ export default function UsersPage() {
   const [viewTab, setViewTab] = React.useState<'members' | 'invitations'>('members');
 
   // Add / Invite Member Modal Mode
-  const [addMemberMode, setAddMemberMode] = React.useState<'invite' | 'direct'>('invite');
+  const [addMemberMode, setAddMemberMode] = React.useState<'invite' | 'direct'>('direct');
   const [isSendingInvite, setIsSendingInvite] = React.useState(false);
   const [isCopyingInvite, setIsCopyingInvite] = React.useState(false);
   const [resendingInviteId, setResendingInviteId] = React.useState<string | null>(null);
@@ -1210,48 +1210,30 @@ export default function UsersPage() {
       >
         <div className="px-6 py-4 border-b border-crm-border bg-white shrink-0">
           <DialogHeader onClose={() => setAddMemberModalOpen(false)} className="mb-0 pb-0 border-b-0">
-            <DialogTitle>
-              {addMemberMode === 'invite' ? 'Invite Team Member' : 'Direct Account Creation'}
-            </DialogTitle>
+            <DialogTitle>Add Member</DialogTitle>
           </DialogHeader>
         </div>
 
         <div className="flex flex-col flex-1 overflow-hidden min-h-0">
-          {/* Mode Switcher */}
-          <div className="px-6 pt-3 pb-1 bg-slate-50 border-b border-slate-100">
-            <div className="flex rounded-lg bg-slate-200/70 p-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setAddMemberMode('invite');
-                  setCreateMemberError(null);
-                }}
-                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center justify-center gap-1.5 ${
-                  addMemberMode === 'invite'
-                    ? 'bg-white text-crm-teal shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Mail className="h-3.5 w-3.5" />
-                Invite Member (Recommended)
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setAddMemberMode('direct');
-                  setCreateMemberError(null);
-                }}
-                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center justify-center gap-1.5 ${
-                  addMemberMode === 'direct'
-                    ? 'bg-white text-crm-teal shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <UserPlus className="h-3.5 w-3.5" />
-                Direct Creation
-              </button>
-            </div>
+          {/* Method Switcher Dropdown (Commented for now - Direct creation active) */}
+          {/*
+          <div className="px-6 py-3 bg-slate-50 border-b border-slate-100">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Method
+            </label>
+            <select
+              value={addMemberMode}
+              onChange={(e) => {
+                setAddMemberMode(e.target.value as 'invite' | 'direct');
+                setCreateMemberError(null);
+              }}
+              className="w-full h-9 rounded-lg border border-crm-border bg-white px-3 text-xs font-medium text-slate-700 shadow-xs focus:outline-none focus:ring-2 focus:ring-crm-teal/30 focus:border-crm-teal transition-all cursor-pointer"
+            >
+              <option value="invite">Invite via Email</option>
+              <option value="direct">Direct Account Creation</option>
+            </select>
           </div>
+          */}
 
           {createMemberError && (
             <div className="mx-6 mt-3 flex items-center gap-2 rounded-lg bg-rose-50 border border-rose-200 px-3 py-2 text-xs text-rose-700 animate-fadeIn">
@@ -1260,52 +1242,29 @@ export default function UsersPage() {
             </div>
           )}
 
-          {/* Form Content */}
-          {addMemberMode === 'invite' ? (
+          {/* Invite Member Form (Commented for now - Direct creation active) */}
+          {/*
+          {addMemberMode === 'invite' && (
             <form
               onSubmit={handleSendInviteSubmit}
               className="flex flex-col flex-1 overflow-hidden min-h-0"
             >
               <div className="px-6 py-4 overflow-y-auto flex-1 space-y-3.5">
-                <div className="rounded-lg bg-teal-50/60 border border-teal-100 p-2.5 text-[11px] text-teal-800 leading-relaxed">
-                  Sends an automated invitation email via Brevo with a secure, single-use account setup link. The invitee can establish their own password.
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-700">Role</label>
+                  <select
+                    value={memberRole}
+                    onChange={(e) => setMemberRole(e.target.value as 'OPERATOR' | 'MANAGER')}
+                    className="w-full h-9 rounded-lg border border-crm-border bg-white px-3 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-crm-teal/30 focus:border-crm-teal transition-all cursor-pointer"
+                  >
+                    <option value="OPERATOR">Operator</option>
+                    <option value="MANAGER">Manager</option>
+                  </select>
                 </div>
 
-                {/* Role Selector */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700">Role Designation</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setMemberRole('OPERATOR')}
-                      className={`h-9 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                        memberRole === 'OPERATOR'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
-                      }`}
-                    >
-                      <UserCheck className="h-3.5 w-3.5" />
-                      Operator
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMemberRole('MANAGER')}
-                      className={`h-9 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                        memberRole === 'MANAGER'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
-                      }`}
-                    >
-                      <Shield className="h-3.5 w-3.5" />
-                      Manager
-                    </button>
-                  </div>
-                </div>
-
-                {/* Email Address */}
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-slate-700">
-                    Invitee Email Address <span className="text-rose-500">*</span>
+                    Email <span className="text-rose-500">*</span>
                   </label>
                   <Input
                     required
@@ -1318,60 +1277,35 @@ export default function UsersPage() {
                   />
                 </div>
 
-                {/* Access Duration */}
-                <div className="space-y-1.5 pt-1">
-                  <label className="text-xs font-medium text-slate-700">Access Duration</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setMemberAccessType('PERMANENT')}
-                      className={`h-8 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all ${
-                        memberAccessType === 'PERMANENT'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      Permanent
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMemberAccessType('TEMPORARY')}
-                      className={`h-8 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all ${
-                        memberAccessType === 'TEMPORARY'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      Temporary
-                    </button>
-                  </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-700">Access</label>
+                  <select
+                    value={memberAccessType}
+                    onChange={(e) => setMemberAccessType(e.target.value as 'PERMANENT' | 'TEMPORARY')}
+                    className="w-full h-9 rounded-lg border border-crm-border bg-white px-3 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-crm-teal/30 focus:border-crm-teal transition-all cursor-pointer"
+                  >
+                    <option value="PERMANENT">Permanent</option>
+                    <option value="TEMPORARY">Temporary</option>
+                  </select>
                 </div>
 
-                {/* Allowed IP / Subnet */}
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-slate-700">
-                      Allowed IP / Subnet CIDR
-                    </label>
-                    <span className="text-[10px] text-slate-400">Optional</span>
-                  </div>
+                  <label className="text-xs font-medium text-slate-700">
+                    Allowed IP <span className="text-[10px] text-slate-400 font-normal">(Optional)</span>
+                  </label>
                   <Input
                     type="text"
-                    placeholder="e.g. 203.0.113.0/24 or 198.51.100.5"
+                    placeholder="e.g. 198.51.100.5"
                     value={memberAllowedIp}
                     onChange={(e) => setMemberAllowedIp(e.target.value)}
                     disabled={isSendingInvite || isCopyingInvite}
                     className="h-9 text-xs font-mono"
                   />
-                  <p className="text-[10px] text-slate-400">
-                    Supports individual IPs, CIDR blocks (/24, /32), or comma-separated lists. Leave blank for unrestricted access.
-                  </p>
                 </div>
 
-                {/* Expires (Only for Temporary) */}
                 {memberAccessType === 'TEMPORARY' && (
                   <div className="space-y-1 animate-fadeIn">
-                    <label className="text-xs font-medium text-slate-700">Account Expiration</label>
+                    <label className="text-xs font-medium text-slate-700">Expiration Date</label>
                     <Input
                       type="datetime-local"
                       required
@@ -1417,52 +1351,39 @@ export default function UsersPage() {
                       className="bg-crm-teal hover:bg-crm-teal-hover text-white h-9 text-xs px-4 font-semibold shadow-xs flex items-center gap-1.5"
                     >
                       <Send className={`h-3.5 w-3.5 ${isSendingInvite ? 'animate-spin' : ''}`} />
-                      Send Invitation
+                      Send Invite
                     </Button>
                   </div>
                 </DialogFooter>
               </div>
             </form>
-          ) : (
-            <form
-              onSubmit={handleAddMemberSubmit}
-              className="flex flex-col flex-1 overflow-hidden min-h-0"
-            >
+          )}
+          */}
+
+          {/* Direct Creation Form */}
+          <form
+            onSubmit={handleAddMemberSubmit}
+            className="flex flex-col flex-1 overflow-hidden min-h-0"
+          >
               <div className="px-6 py-4 overflow-y-auto flex-1 space-y-3.5">
                 {/* Role Selector */}
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <label className="text-xs font-medium text-slate-700">Role</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setMemberRole('OPERATOR')}
-                      className={`h-9 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                        memberRole === 'OPERATOR'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
-                      }`}
-                    >
-                      <UserCheck className="h-3.5 w-3.5" />
-                      Operator
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMemberRole('MANAGER')}
-                      className={`h-9 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                        memberRole === 'MANAGER'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
-                      }`}
-                    >
-                      <Shield className="h-3.5 w-3.5" />
-                      Manager
-                    </button>
-                  </div>
+                  <select
+                    value={memberRole}
+                    onChange={(e) => setMemberRole(e.target.value as 'OPERATOR' | 'MANAGER')}
+                    className="w-full h-9 rounded-lg border border-crm-border bg-white px-3 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-crm-teal/30 focus:border-crm-teal transition-all cursor-pointer"
+                  >
+                    <option value="OPERATOR">Operator</option>
+                    <option value="MANAGER">Manager</option>
+                  </select>
                 </div>
 
                 {/* Email Address */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-700">Email</label>
+                  <label className="text-xs font-medium text-slate-700">
+                    Email <span className="text-rose-500">*</span>
+                  </label>
                   <Input
                     required
                     type="email"
@@ -1502,7 +1423,9 @@ export default function UsersPage() {
                 {/* Passwords */}
                 <div className="grid grid-cols-2 gap-2.5">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-700">Password</label>
+                    <label className="text-xs font-medium text-slate-700">
+                      Password <span className="text-rose-500">*</span>
+                    </label>
                     <PasswordInput
                       required
                       placeholder="••••••••"
@@ -1514,7 +1437,9 @@ export default function UsersPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-700">Confirm Password</label>
+                    <label className="text-xs font-medium text-slate-700">
+                      Confirm Password <span className="text-rose-500">*</span>
+                    </label>
                     <PasswordInput
                       required
                       placeholder="••••••••"
@@ -1527,40 +1452,26 @@ export default function UsersPage() {
                 </div>
 
                 {/* Access Type */}
-                <div className="space-y-1.5 pt-1">
+                <div className="space-y-1">
                   <label className="text-xs font-medium text-slate-700">Access</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setMemberAccessType('PERMANENT')}
-                      className={`h-8 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all ${
-                        memberAccessType === 'PERMANENT'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      Permanent
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setMemberAccessType('TEMPORARY')}
-                      className={`h-8 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all ${
-                        memberAccessType === 'TEMPORARY'
-                          ? 'bg-[#16C1C8] border-[#16C1C8] text-white shadow-xs'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      Temporary
-                    </button>
-                  </div>
+                  <select
+                    value={memberAccessType}
+                    onChange={(e) => setMemberAccessType(e.target.value as 'PERMANENT' | 'TEMPORARY')}
+                    className="w-full h-9 rounded-lg border border-crm-border bg-white px-3 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-crm-teal/30 focus:border-crm-teal transition-all cursor-pointer"
+                  >
+                    <option value="PERMANENT">Permanent</option>
+                    <option value="TEMPORARY">Temporary</option>
+                  </select>
                 </div>
 
                 {/* Allowed IP */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-700">Allowed IP</label>
+                  <label className="text-xs font-medium text-slate-700">
+                    Allowed IP <span className="text-[10px] text-slate-400 font-normal">(Optional)</span>
+                  </label>
                   <Input
                     type="text"
-                    placeholder="e.g. 203.0.113.25"
+                    placeholder="e.g. 198.51.100.5"
                     value={memberAllowedIp}
                     onChange={(e) => setMemberAllowedIp(e.target.value)}
                     disabled={isCreatingMember}
@@ -1571,7 +1482,7 @@ export default function UsersPage() {
                 {/* Expires */}
                 {memberAccessType === 'TEMPORARY' && (
                   <div className="space-y-1 animate-fadeIn">
-                    <label className="text-xs font-medium text-slate-700">Expires</label>
+                    <label className="text-xs font-medium text-slate-700">Expiration Date</label>
                     <Input
                       type="datetime-local"
                       required
@@ -1607,7 +1518,6 @@ export default function UsersPage() {
                 </DialogFooter>
               </div>
             </form>
-          )}
         </div>
       </Dialog>
 
@@ -1630,9 +1540,9 @@ export default function UsersPage() {
               onChange={(e) => setNewRole(e.target.value as UserRole)}
               className="w-full h-9 rounded-md border border-slate-300 bg-white px-3 text-xs focus:outline-none focus:ring-1 focus:ring-crm-teal"
             >
-              <option value="OPERATOR">Operator (Operational frontline)</option>
-              <option value="MANAGER">Manager (Management operations)</option>
-              <option value="SUPER_ADMIN">Super Admin (Full administrative power)</option>
+              <option value="OPERATOR">Operator</option>
+              <option value="MANAGER">Manager</option>
+              <option value="SUPER_ADMIN">Super Admin</option>
             </select>
           </div>
 

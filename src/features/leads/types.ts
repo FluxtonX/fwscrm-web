@@ -113,6 +113,9 @@ export interface QueryLeadsParams {
   ownerId?: string;
   sort?: string;
   order?: 'asc' | 'desc';
+  dateFrom?: string;
+  dateTo?: string;
+  columns?: string;
 }
 
 
