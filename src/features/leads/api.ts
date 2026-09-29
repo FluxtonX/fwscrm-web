@@ -203,6 +203,10 @@ export async function downloadLeadsCsv(params: QueryLeadsParams = {}): Promise<v
   if (params.country) query.set('country', params.country);
   if (params.leadSource) query.set('leadSource', params.leadSource);
   if (params.ownerId) query.set('ownerId', params.ownerId);
+  if (params.preset) query.set('preset', params.preset);
+  if (params.dateFrom) query.set('dateFrom', params.dateFrom);
+  if (params.dateTo) query.set('dateTo', params.dateTo);
+  if (params.columns) query.set('columns', params.columns);
 
   const qs = query.toString();
   const res = await fetch(`${API_BASE_URL}/leads/export${qs ? `?${qs}` : ''}`, {

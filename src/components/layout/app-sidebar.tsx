@@ -67,12 +67,12 @@ export function AppSidebar() {
   }, [can]);
 
   return (
-    <aside className="w-56 shrink-0 bg-[#0A2428] text-slate-300 border-r border-[#0D2D32] flex flex-col justify-between select-none h-full overflow-y-auto sidebar-scroll">
+    <aside className="w-60 shrink-0 bg-[#0A2428] text-slate-300 border-r border-[#0D2D32] flex flex-col justify-between select-none h-full overflow-y-auto sidebar-scroll">
       <div className="py-4 flex-1">
-        <div className="px-4 mb-3 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="px-4 mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
           CRM Navigation
         </div>
-        <nav className="space-y-1 px-2">
+        <nav className="space-y-1 px-2.5">
           {visibleItems.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -84,13 +84,13 @@ export function AppSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-xs transition-all duration-150',
+                  'flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm transition-all duration-150',
                   isActive
-                    ? 'bg-[#0D2D32] text-[#22D3DA] font-semibold shadow-sm border-l-2 border-[#16C1C8] pl-2.5'
+                    ? 'bg-[#0D2D32] text-[#22D3DA] font-semibold shadow-sm border-l-2 border-[#16C1C8] pl-3'
                     : 'text-slate-300 hover:bg-[#0D2D32]/70 hover:text-white font-medium',
                 )}
               >
-                <Icon className={cn('h-4 w-4 shrink-0', isActive ? 'text-[#16C1C8]' : 'text-slate-400')} />
+                <Icon className={cn('h-[18px] w-[18px] shrink-0', isActive ? 'text-[#16C1C8]' : 'text-slate-400')} />
                 <span>{item.label}</span>
               </Link>
             );
@@ -98,9 +98,9 @@ export function AppSidebar() {
         </nav>
       </div>
 
-      <div className="p-4 border-t border-[#0D2D32] text-[11px] text-slate-400 shrink-0 space-y-0.5">
-        <div className="font-semibold text-slate-300">FWS CRM v1.0</div>
-        <div className="text-[10px] text-slate-400">Enterprise Edition</div>
+      <div className="p-4 border-t border-[#0D2D32] text-xs text-slate-400 shrink-0 space-y-1">
+        <div className="font-semibold text-slate-200">FWS CRM v1.0</div>
+        <div className="text-[11px] text-slate-400">Enterprise Edition</div>
       </div>
     </aside>
   );
